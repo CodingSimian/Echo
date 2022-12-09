@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Echo.iml" filepath="$PROJECT_DIR$/.idea/Echo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EchoSpelDatabas/EchoSpelDatabas.iml" filepath="$PROJECT_DIR$/EchoSpelDatabas/EchoSpelDatabas.iml" />
     </modules>
   </component>
 </project>
