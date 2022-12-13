@@ -5,22 +5,22 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-public class OscarTestMain {
+public class TeamMatchController {
     protected static EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
     public static void main(String[] args) {
 
-        addTvTMatch(1,2,3,4,2,2,0);
+        addTeamMatch(1,2,3,4,2,2,0);
         ENTITY_MANAGER_FACTORY.close();
     }
 
-    public static void addTvTMatch (int matchId,int teamId1, int teamId2, int gameId, int winnerId, int scoreT1, int scoreT2) {
+    public static void addTeamMatch(int matchId, int teamId1, int teamId2, int gameId, int winnerId, int scoreT1, int scoreT2) {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
 
         try {
             et = em.getTransaction();
             et.begin();
-            TeamVsTeam match = new TeamVsTeam();
+            TeamMatch match = new TeamMatch();
             match.setMatchId(matchId);
             match.setTeamId1(teamId1);
             match.setScoreT2(teamId2);

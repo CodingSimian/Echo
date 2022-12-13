@@ -8,11 +8,11 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "TvT")
-public class TeamVsTeam implements Serializable {
+public class TeamMatch implements Serializable {
 
         @Id
         @Column(name = "match_Id")
-        private int matchId;
+        private int matchId; // Behövs match_id? Auto-increment etc.
 
         @Column(name = "team_Id1")
         private int teamId1;
@@ -27,7 +27,7 @@ public class TeamVsTeam implements Serializable {
         private int winnerId;
 
        @Column(name = "date" )
-        private int date;
+        private int date; //Behövs date?
 
         @Column(name = "score_T1" )
         private int scoreT1;
