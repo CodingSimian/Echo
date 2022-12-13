@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import java.io.Serializable;
 
  //första entity klassen
-@Entity
+//@Entity
 public class Spelare implements Serializable { //Serializable är viktigt för dataöverföring
 
 }
