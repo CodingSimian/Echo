@@ -8,6 +8,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "team")
 public class Team {
+
+    // Properties
     @Id
     @Column(name = "team_id")
     private int teamId;
@@ -18,6 +20,8 @@ public class Team {
     @Column(name = "game_id" )
     private int gameId;
 
+
+    // Getters n Setters
 
     public int getTeamId() {
         return teamId;
