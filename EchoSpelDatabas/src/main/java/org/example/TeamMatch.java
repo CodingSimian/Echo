@@ -5,14 +5,20 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
+
+
 
 @Entity
-@Table(name = "TvT")
+@Table(name = "tvt")
 public class TeamMatch implements Serializable {
+
+    public TeamMatch() {
+    }
 
         @Id
         @Column(name = "match_Id")
-        private int matchId; // Behövs match_id? Auto-increment etc.
+        private int matchId;
 
         @Column(name = "team_Id1")
         private int teamId1;
@@ -26,8 +32,8 @@ public class TeamMatch implements Serializable {
         @Column(name = "winner_Id" )
         private int winnerId;
 
-       @Column(name = "date" )
-        private int date; //Behövs date?
+        @Column(name = "date" )
+        private String date;
 
         @Column(name = "score_T1" )
         private int scoreT1;
@@ -75,14 +81,13 @@ public class TeamMatch implements Serializable {
         this.winnerId = winnerId;
     }
 
- /*   public int getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(int date) {
+    public void setDate(String date) {
         this.date = date;
     }
-  */
 
     public int getScoreT1() {
         return scoreT1;
