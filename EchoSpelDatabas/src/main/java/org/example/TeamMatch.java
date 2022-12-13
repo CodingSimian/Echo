@@ -5,12 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
-
 
 
 @Entity
-@Table(name = "tvt")
+@Table(name="tvt")
 public class TeamMatch implements Serializable {
 
     public TeamMatch() {
