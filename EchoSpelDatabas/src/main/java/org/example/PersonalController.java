@@ -1,9 +1,6 @@
 package org.example;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +8,6 @@ import java.util.List;
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
 public class PersonalController {
-
 
     public  void addPersonal(String fName, String lName, String nickName, String adress, int postalnNumber, String postalCity, String country, String email ){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
