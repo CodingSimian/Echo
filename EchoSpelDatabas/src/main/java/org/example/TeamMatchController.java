@@ -3,6 +3,8 @@ import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.example.Main.ENTITY_MANAGER_FACTORY;
+
 public class TeamMatchController {
     protected static EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
 
@@ -76,22 +78,22 @@ public class TeamMatchController {
         }
     }
 
-/*    public void updateTeamMatch(int matchId,int teamId1, int teamId2, int gameId, int winnerId,String date , int scoreT1, int scoreT2){
+    public void changeMatch(int matchId, int winnerId, int scoreT1, int scoreT2){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
-        //Behöver mer kärlek
-
-
+        TeamMatch teamMatch;
         try{
             et = em.getTransaction();
             et.begin();
-            TeamMatch teamMatch;
-            teamMatch= em.find(TeamMatch.class, matchId);
-            teamMatch.updateTeamMatch(matchId,teamId1,teamId2,gameId,winnerId,date,scoreT1,scoreT2);
-            em.merge(teamMatch);
-            et.commit();
+            teamMatch = em.find(TeamMatch.class, matchId);
+            teamMatch.setWinnerId(winnerId);
+            teamMatch.setScoreT1(scoreT1);
+            teamMatch.setScoreT2(scoreT2);
 
-        }catch(Exception ex){
+            em.persist(teamMatch);
+            et.commit();
+        }
+        catch(Exception ex){
             if(et != null){
                 et.rollback();
             }
@@ -100,9 +102,7 @@ public class TeamMatchController {
         finally {
             em.close();
         }
-        em.close();
-
-    } */
+    }
 
     public List<TeamMatch> getAllMatches(){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
@@ -126,6 +126,7 @@ public class TeamMatchController {
         }
         finally {
             em.close();
+            System.out.println(isSuccess);
         }
         return teamMatchList;
 

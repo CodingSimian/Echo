@@ -17,9 +17,10 @@ public class Main {
        /* teamMatch = controller.getTeamMatch(4);
         System.out.println(teamMatch.getTeamId2());*/
        // controller.addTeamMatch(1,2,1,2,"2022-12-23",1,1);
-       teamMatchList =  controller.getAllMatches();
+       //teamMatchList =  controller.getAllMatches();
+       controller.changeMatch(1,2,5,2);
       //  controller.getTeamMatch(3);
-      //  controller.removeTeamMatch(1);
+       // controller.removeTeamMatch(5);
 
 
         ENTITY_MANAGER_FACTORY.close();
