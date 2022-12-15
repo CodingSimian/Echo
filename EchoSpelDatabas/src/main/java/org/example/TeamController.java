@@ -5,10 +5,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-//import static org.example.Main.ENTITY_MANAGER_FACTORY;
+import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
 public class TeamController {
-    protected static EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
+
 
     public  void addTeam(int id, String name){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
