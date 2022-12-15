@@ -1,12 +1,8 @@
 package org.example;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -17,9 +13,7 @@ public class MiscViews { //Denna java klass ska användas för att kunna skapa u
 private BorderPane root2Scene;
 private VBox optionsVBox;
 private Button spelareButton;
-private Button lagButton;
-private Button matchButton;
-private Button turneringButton;
+private Button lagButton, matchPvPButton,turneringButton,matchTvTButton;
 private Label alternativ;
 
     //private EventHandler<ActionEvent> setOnAction(EventHandler<ActionEvent> actionEventEventHandler) {}
@@ -44,8 +38,12 @@ private Label alternativ;
         //lagButton.setOnAction(ActionEvent -> scene.setRoot());
         lagButton.setPrefWidth(100);
 
-        matchButton = new Button("Match");
-        matchButton.setPrefWidth(100);
+        matchTvTButton = new Button("Match (Team vs Team");
+        matchTvTButton.setPrefWidth(100);
+
+
+        matchPvPButton = new Button("Match (Player vs 3Player");
+        matchPvPButton.setPrefWidth(100);
 
         turneringButton = new Button("Turnering");
         //turneringButton.setOnAction(ActionEvent -> scene.setRoot());
@@ -54,7 +52,7 @@ private Label alternativ;
         alternativ = new Label("Välj vad du vill konfigurera");
         alternativ.setFont(new Font("System",18));
 
-        optionsVBox.getChildren().addAll(alternativ,spelareButton,lagButton,matchButton,turneringButton);
+        optionsVBox.getChildren().addAll(alternativ,spelareButton,lagButton, matchPvPButton,turneringButton);
         optionsVBox.setAlignment(Pos.CENTER);
 
         root2Scene.setCenter(optionsVBox);
@@ -92,12 +90,12 @@ private Label alternativ;
         this.lagButton = lagButton;
     }
 
-    public Button getMatchButton() {
-        return matchButton;
+    public Button getMatchPvPButton() {
+        return matchPvPButton;
     }
 
-    public void setMatchButton(Button matchButton) {
-        this.matchButton = matchButton;
+    public void setMatchPvPButton(Button matchPvPButton) {
+        this.matchPvPButton = matchPvPButton;
     }
 
     public Button getTurneringButton() {
