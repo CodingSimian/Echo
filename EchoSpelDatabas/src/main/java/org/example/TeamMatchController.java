@@ -3,9 +3,6 @@ import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
 
-
-
-
 public class TeamMatchController {
     protected static EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
 
@@ -111,6 +108,7 @@ public class TeamMatchController {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         List<TeamMatch> teamMatchList = null;
+        boolean isSuccess = true;
         //String strQuery = "SELECT t FROM TeamMatch t WHERE t.matchId IS NOT NULL";
        // TypedQuery<TeamMatch> tm = em.createQuery(strQuery, TeamMatch.class);
        // List<TeamMatch> teamMatchList = new ArrayList<>();
