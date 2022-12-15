@@ -2,19 +2,31 @@ package org.example;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.Date;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Main {
-    protected static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
+    protected static EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
+
     public static void main(String[] args) {
+        TeamMatch teamMatch = new TeamMatch();
+        TeamMatchController controller = new TeamMatchController();
+        List<TeamMatch> teamMatchList = null;
 
-        PvPController thePlayerMatchController = new PvPController();
-        //thePlayerMatchController.addPvPMatch(3,1,2,1, "2022-12-13");
-        thePlayerMatchController.getMatchAndMore(1);
-        thePlayerMatchController.changeMatch(1, 30, 15,3);
-        thePlayerMatchController.getMatchAndMore(3);
+        teamMatch = controller.getTeamMatch(1);
+        System.out.println(teamMatch.getTeamId2());
 
-        //thePlayerMatchController.deleteMatch(3);
-        //thePlayerMatchController.showMatches();
+       controller.addTeamMatch(1,2,1,2,"2022-12-23",1,1);
+
+       controller.getAllTeamMatches();
+       controller.changeMatch(1,2,5,2);
+       controller.getTeamMatch(3);
+       controller.removeTeamMatch(5);
+
+
+        ENTITY_MANAGER_FACTORY.close();
 
     }
 }
