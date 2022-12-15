@@ -1,20 +1,22 @@
 package org.example;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.Date;
-public class Main {
+public class Main extends Application{
     protected static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
+    static Graphics graphics;
+
     public static void main(String[] args) {
+          graphics = new Graphics();
+         launch();
+    }
 
-        PvPController thePlayerMatchController = new PvPController();
-        //thePlayerMatchController.addPvPMatch(3,1,2,1, "2022-12-13");
-        thePlayerMatchController.getMatchAndMore(1);
-        thePlayerMatchController.changeMatch(1, 30, 15,3);
-        thePlayerMatchController.getMatchAndMore(3);
 
-        //thePlayerMatchController.deleteMatch(3);
-        //thePlayerMatchController.showMatches();
-
+    @Override
+    public void start(Stage stage) throws Exception {
+        stage = graphics.start();
+        stage.show();
     }
 }

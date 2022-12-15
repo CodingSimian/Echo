@@ -3,6 +3,7 @@ package org.example;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Entity
 public class Personal {
@@ -20,7 +21,7 @@ public class Personal {
     @Column(name = "adress")
     private String adress;
     @Column(name = "postal_Nmbr")
-    private int postalNnumber;
+    private int postalNumber;
     @Column(name = "postal_city")
     private String postalCity;
     @Column(name = "country")
@@ -66,12 +67,12 @@ public class Personal {
         this.adress = adress;
     }
 
-    public int getPostalNnumber() {
-        return postalNnumber;
+    public int getPostalNumber() {
+        return postalNumber;
     }
 
-    public void setPostalNnumber(int postalNnumber) {
-        this.postalNnumber = postalNnumber;
+    public void setPostalNumber(int postalNnumber) {
+        this.postalNumber = postalNnumber;
     }
 
     public String getPostalCity() {
@@ -104,7 +105,7 @@ public class Personal {
         this.lastName = lastName;
         this.nickName = nickName;
         this.adress = adress;
-        this.postalNnumber = postalNnumber;
+        this.postalNumber = postalNnumber;
         this.postalCity = postalCity;
         this.country = country;
         this.email = email;
@@ -118,7 +119,7 @@ public class Personal {
         this.lastName = lastName;
         this.nickName = nickName;
         this.adress = adress;
-        this.postalNnumber = postalNnumber;
+        this.postalNumber = postalNnumber;
         this.postalCity = postalCity;
         this.country = country;
         this.email = email;
