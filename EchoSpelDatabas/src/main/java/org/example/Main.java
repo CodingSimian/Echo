@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Main {
     protected static EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
+
     public static void main(String[] args) {
         TeamMatch teamMatch = new TeamMatch();
         TeamMatchController controller = new TeamMatchController();
