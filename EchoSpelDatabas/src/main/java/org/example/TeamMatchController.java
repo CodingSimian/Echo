@@ -1,15 +1,14 @@
 package org.example;
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.List;
-
-import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
 public class TeamMatchController {
     protected static EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
 
+    public TeamMatchController() {
+    }
 
-    public static void addTeamMatch(int teamId1, int teamId2, int gameId, int winnerId,String date , int scoreT1, int scoreT2) {
+    public static void addTeamMatch(int teamId1, int teamId2, int gameId, int winnerId, String date , int scoreT1, int scoreT2) {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
 
@@ -104,7 +103,7 @@ public class TeamMatchController {
         }
     }
 
-    public List<TeamMatch> getAllMatches(){
+    public List<TeamMatch> getAllTeamMatches(){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         List<TeamMatch> teamMatchList = null;
