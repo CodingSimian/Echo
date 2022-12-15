@@ -236,7 +236,8 @@ public class PersonalView extends VBox {
 
             }
             System.out.println(person.getId()+ " " +person.getAdress());
-            controller.removePersonal(person);
+            //controller.removePersonal(person);
+            controller.removePersonal2(person); //Viktors metod
         }
         popupWindow.close();
     }

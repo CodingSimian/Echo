@@ -1,13 +1,10 @@
 package org.example;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.hibernate.query.NativeQuery;
 
 import javax.persistence.*;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +12,11 @@ import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
 public class PersonalController {
 
-    private ObservableList<Personal> personal ;
+    private ObservableList<Personal> personalObservableList; //Observable list används eftersom den ändrar sin grafiska aspekt så fort dess värden förändras
 
 
     public PersonalController(){
-        personal = FXCollections.observableArrayList();
+        personalObservableList = FXCollections.observableArrayList();
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         String strQuery = "SELECT e FROM Personal e WHERE e.id IS NOT NULL";
         TypedQuery<Personal> ps = em.createQuery(strQuery, Personal.class);
@@ -28,8 +25,8 @@ public class PersonalController {
 
         try{
             List<Personal> temp = ps.getResultList();
-            personal.addAll(temp);
-            System.out.println(personal.toString());
+            personalObservableList.addAll(temp);
+            System.out.println(personalObservableList.toString());
 
         }catch(NoResultException ex){
             ex.printStackTrace();
@@ -66,14 +63,14 @@ public class PersonalController {
         finally {
             System.out.println("finally");
             em.close();
-            personal.add(pers);
+            personalObservableList.add(pers);
         }
     }
 
     public void updatePersonal(Personal temporary ){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
-        personal.remove(temporary);
+        personalObservableList.remove(temporary);
         Personal database ;
         try{
             et = em.getTransaction();
@@ -83,7 +80,7 @@ public class PersonalController {
             database.uppDatePersonalInfo(temporary.getFirstName(),temporary.getLastName(),temporary.getNickName(),temporary.getAdress(),temporary.getPostalNumber(),temporary.getPostalCity(),temporary.getCountry(),temporary.getEmail());
             em.merge(database);
             et.commit();
-            personal.add(database);
+            personalObservableList.add(database);
 
 
         }catch(Exception ex){
@@ -101,13 +98,63 @@ public class PersonalController {
 
     }
 
+    public  void removePersonal2(Personal person){
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction et = null;
+        personalObservableList.remove(person); //Rad som tar bort person ur observable list
+        Personal pers;
+
+        /*String strQuery = "SELECT e FROM Personal e WHERE e.nickName=:"+ person.getNickName();
+        TypedQuery<Personal> ps = em.createQuery(strQuery, Personal.class);*/
+
+
+        try{
+            et = em.getTransaction();
+            et.begin();
+            pers = em.find(Personal.class,person.getId());
+            em.remove(pers);
+
+            em.flush();
+
+            et.commit();
+
+        }catch (IllegalArgumentException e){ //https://www.baeldung.com/jpa-query-parameters
+            String test = person.getNickName();
+            String strQuery = "SELECT e FROM Personal e WHERE e.nickName = ?1";
+            TypedQuery<Personal> ps = em.createQuery(strQuery, Personal.class);
+
+
+            pers = ps.setParameter(1,test).getSingleResult();
+            em.remove(pers);//Rad som tar bort ur databasen
+
+            em.flush();
+
+            et.commit(); //Denna lösning visar ingen error men gör inget ändå
+
+
+
+        }
+        catch(Exception ex){
+            if(et != null){
+                et.rollback();
+            }
+
+        }
+        finally {
+            em.close();
+        }
+
+    }
+
+
     public  void removePersonal(Personal person){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
-        personal.remove(person);
-        Personal pers ;
-        String strQuery = "SELECT e FROM Personal e WHERE e.nickName=:"+ person.getNickName();
-        TypedQuery<Personal> ps = em.createQuery(strQuery, Personal.class);
+        personalObservableList.remove(person);
+        Personal pers;
+
+        /*String strQuery = "SELECT e FROM Personal e WHERE e.nickName=:"+ person.getNickName();
+        TypedQuery<Personal> ps = em.createQuery(strQuery, Personal.class);*/
 
 
         try{
@@ -119,9 +166,9 @@ public class PersonalController {
 
 
         }catch (IllegalArgumentException e){
-           // String test = person.getNickName();
-           // String strQuery = "SELECT e FROM Personal e WHERE e.nickName=:"+ test;
-            //TypedQuery<Personal> ps = em.createQuery(strQuery, Personal.class);
+            String test = person.getNickName();
+            String strQuery = "SELECT e FROM Personal e WHERE e.nickName=" + test;
+            TypedQuery<Personal> ps = em.createQuery(strQuery, Personal.class);
             pers = ps.getSingleResult();
             em.remove(pers);
             et.commit();
@@ -177,8 +224,8 @@ public class PersonalController {
 
         try{
             temp = ps.getResultList();
-            personal.addAll(temp);
-            System.out.println(personal.toString());
+            personalObservableList.addAll(temp);
+            System.out.println(personalObservableList.toString());
 
         }catch(NoResultException ex){
             ex.printStackTrace();
@@ -191,6 +238,6 @@ public class PersonalController {
 
     }
     public ObservableList<Personal> getPersonal1(){
-        return personal;
+        return personalObservableList;
     }
 }
