@@ -1,14 +1,39 @@
 package org.example;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import javax.persistence.*;
+
+import java.util.List;
 
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
 public class TeamController {
 
+    private ObservableList<Team> teamObservableList ;
+
+
+    public TeamController(){
+        teamObservableList = FXCollections.observableArrayList();
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        String strQuery = "SELECT e FROM Team e WHERE e.teamId IS NOT NULL";
+        TypedQuery<Team> tQ = em.createQuery(strQuery, Team.class);
+
+
+
+        try{
+            List<Team> temp = tQ.getResultList();
+            teamObservableList.addAll(temp);
+
+        }catch(NoResultException ex){
+            ex.printStackTrace();
+        }
+        finally {
+            em.close();
+        }
+
+    }
 
     public  void addTeam(int id, String name){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
@@ -113,6 +138,10 @@ public class TeamController {
         }
         return team;
 
+    }
+
+    public ObservableList<Team> getTeamObservableList(){
+        return  teamObservableList;
     }
 
 

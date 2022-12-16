@@ -37,6 +37,8 @@ public class PersonalView extends VBox {
 
     private Button edit;
 
+    private Button homeButton;
+
     private HBox top;
 
     private PersonalController controller;
@@ -44,8 +46,8 @@ public class PersonalView extends VBox {
     private Stage popupWindow;
 
 
-    public PersonalView(){
-        buildUI();
+    public PersonalView(Button button){
+        buildUI(button);
     }
 
 
@@ -58,13 +60,14 @@ public class PersonalView extends VBox {
        objekt som finns i listan det medgör att taballen uppdateras automatiskts när något objekt läggs till eller tas bort från ObservabelList.
 
      */
-    private void buildUI(){
+    private void buildUI(Button button){
         controller = new PersonalController();
         table = new TableView<Personal>();
         pane = new BorderPane();
         add = new Button("Add");
         delete = new Button("Delete");
         edit = new Button("Edit");
+        homeButton = button;
         pane.setPrefSize(800,700);
         table.setPrefSize(200,300);
 
@@ -76,7 +79,8 @@ public class PersonalView extends VBox {
         edit.setOnAction(this::editButtonPressed);
         top = new HBox();
         top.setSpacing(15);
-        top.getChildren().addAll(add,delete,edit);
+        top.getChildren().addAll(homeButton,add,delete,edit);
+
 
 
 
@@ -85,7 +89,7 @@ public class PersonalView extends VBox {
 
         // Skapar Columerna i tabelen samt kopplar varje enskild colum till en property i Person Klassen
         // Så att varje Colum vet vad den ska visa för information
-        TableColumn<Personal, String> firstNameColum = new TableColumn<Personal, String>("Firstname");
+        firstNameColum = new TableColumn<Personal, String>("Firstname");
         firstNameColum.setCellValueFactory(new PropertyValueFactory<Personal,String>("firstName"));
 
         TableColumn<Personal,String > lastNameColum = new TableColumn<Personal, String>("Lastname");
@@ -113,7 +117,7 @@ public class PersonalView extends VBox {
         // Lägger ihop alla columer till en tabell samt kopplar tabellen till observabelList så den vet vart den ska leta efter objekt.
         table.getColumns().addAll(firstNameColum,lastNameColum,nickNameColum,adressNameColum,postalNumberColum,postalCityColum,countryColum,emailColum);
         //table.getItems().addAll(controller.getAllPersonal());
-        table.setItems(controller.getPersonal1());
+        table.setItems(controller.getPersonal1()); // Viktig rad.
         table.setFocusTraversable(false);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -122,6 +126,10 @@ public class PersonalView extends VBox {
         pane.setTop(top);
         pane.setCenter(table);
         //getChildren().add(table);
+    }
+    public void setHomeButton(Button button){
+        homeButton = button;
+
     }
 
     // retunerar rootnoden , skall användas av Graphics klassen
@@ -137,10 +145,10 @@ public class PersonalView extends VBox {
     // Samt skickar vidare till en metod som anropar PersonalController att skapa och lägga till det nya Objektet i databsen
     public void addButtonPressed(ActionEvent event){
          popupWindow = new Stage();
-        popupWindow.initModality(Modality.APPLICATION_MODAL);
-        popupWindow.setTitle("Formulär?");
-        popupWindow.setMinHeight(400);
-        popupWindow.setMinWidth(200);
+         popupWindow.initModality(Modality.APPLICATION_MODAL);
+         popupWindow.setTitle("Formulär?");
+         popupWindow.setMinHeight(400);
+         popupWindow.setMinWidth(200);
          firstName = new TextField();
          lastName = new TextField();
          nickName = new TextField();
@@ -237,7 +245,7 @@ public class PersonalView extends VBox {
             }
             System.out.println(person.getId()+ " " +person.getAdress());
             //controller.removePersonal(person);
-            controller.removePersonal2(person); //Viktors metod
+            controller.removePersonal(person); //Viktors metod
         }
         popupWindow.close();
     }

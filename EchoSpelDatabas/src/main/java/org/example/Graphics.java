@@ -2,7 +2,11 @@ package org.example;
 
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,8 +22,14 @@ public class Graphics  {
     private Stage Mainstage;
     private PersonalView personalView;
 
-    private PvPView daPvPView;
-    private MiscViews optionsMenu;
+    private MiscViews miscView;
+    private TeamView teamView;
+
+
+    private Button homeButton;
+
+
+
 
 
 
@@ -27,9 +37,20 @@ public class Graphics  {
 
 
     Graphics() throws IOException {
-    personalView = new PersonalView(); //Eftersom konstruktorn skapar upp root noden samt hela scenen,
-    optionsMenu = new MiscViews();
+        homeButton = new Button("Home");
+        homeButton.setPrefSize(50,50);
+        personalView = new PersonalView(homeButton);
+        teamView = new TeamView(homeButton);
+        miscView = new MiscViews();
+
+
+        personalView.setHomeButton(homeButton);
+        homeButton.setOnAction(event -> scene.setRoot(miscView.getRoot2Scene()));
+
+
     }
+
+
 
     // Kommer användas för att byta mellan de olika Views,
     public void startview(ActionEvent e){
@@ -54,55 +75,15 @@ public class Graphics  {
 
 
 
+
     // StartMetod som retunera en Stage till Main som sedan kör launch,
     // personalView ligger här tillfälligt
     public Stage start(){
-        scene = new Scene(optionsMenu.getRoot2Scene(),800,700);
+        scene = new Scene(teamView.getTeamView(),800,700);
         Mainstage = new Stage();
-        Mainstage.setTitle("Pied Pipers Corporate Data Management");
         Mainstage.setScene(scene);
 
         return Mainstage;
-    }
-
-    public Scene getScene() {
-        return scene;
-    }
-
-    public void setScene(Scene scene) {
-        this.scene = scene;
-    }
-
-    public Stage getMainstage() {
-        return Mainstage;
-    }
-
-    public void setMainstage(Stage mainstage) {
-        Mainstage = mainstage;
-    }
-
-    public PersonalView getPersonalView() {
-        return personalView;
-    }
-
-    public void setPersonalView(PersonalView personalView) {
-        this.personalView = personalView;
-    }
-
-    public PvPView getDaPvPView() {
-        return daPvPView;
-    }
-
-    public void setDaPvPView(PvPView daPvPView) {
-        this.daPvPView = daPvPView;
-    }
-
-    public MiscViews getOptionsMenu() {
-        return optionsMenu;
-    }
-
-    public void setOptionsMenu(MiscViews optionsMenu) {
-        this.optionsMenu = optionsMenu;
     }
 }
 

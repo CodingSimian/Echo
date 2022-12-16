@@ -43,4 +43,9 @@ public class Team {
     public void setGameId(int gameId) {
         this.gameId = gameId;
     }
+
+    @Override
+    public String toString(){
+        return this.getName();
+    }
 }
