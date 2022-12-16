@@ -8,8 +8,8 @@
         <properties>
             <property name = "javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/echo"/>
-            <property name="javax.persistence.jdbc.user" value="Echo"/> <!--Echo-->
-            <property name="javax.persistence.jdbc.password" value="123456789"/> <!--123456789-->
+            <property name="javax.persistence.jdbc.user" value="Echo"/>
+            <property name="javax.persistence.jdbc.password" value="123456789"/>
             <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
