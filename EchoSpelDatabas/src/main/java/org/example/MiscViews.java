@@ -31,28 +31,28 @@ private Label alternativ;
 
          spelareButton = new Button("Spelare");
         //spelareButton.setOnAction(ActionEvent -> scene.setRoot());
-        spelareButton.setPrefWidth(100);
+        spelareButton.setPrefWidth(150);
         //ALlt detta kan vi mycket enklare och snyggare ändra med css senare i projektet, men tills vidare duger detta
 
         lagButton = new Button("Lag");
         //lagButton.setOnAction(ActionEvent -> scene.setRoot());
-        lagButton.setPrefWidth(100);
+        lagButton.setPrefWidth(150);
 
-        matchTvTButton = new Button("Match (Team vs Team");
-        matchTvTButton.setPrefWidth(100);
+        matchTvTButton = new Button("Match (Team vs Team)");
+        matchTvTButton.setPrefWidth(150);
 
 
-        matchPvPButton = new Button("Match (Player vs 3Player");
-        matchPvPButton.setPrefWidth(100);
+        matchPvPButton = new Button("Match (Player vs Player");
+        matchPvPButton.setPrefWidth(150);
 
         turneringButton = new Button("Turnering");
         //turneringButton.setOnAction(ActionEvent -> scene.setRoot());
-        turneringButton.setPrefWidth(100);
+        turneringButton.setPrefWidth(150);
 
         alternativ = new Label("Välj vad du vill konfigurera");
         alternativ.setFont(new Font("System",18));
 
-        optionsVBox.getChildren().addAll(alternativ,spelareButton,lagButton, matchPvPButton,turneringButton);
+        optionsVBox.getChildren().addAll(alternativ,spelareButton,lagButton, matchPvPButton,turneringButton,matchTvTButton);
         optionsVBox.setAlignment(Pos.CENTER);
 
         root2Scene.setCenter(optionsVBox);
