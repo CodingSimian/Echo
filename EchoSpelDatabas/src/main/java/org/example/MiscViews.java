@@ -13,7 +13,7 @@ public class MiscViews { //Denna java klass ska användas för att kunna skapa u
 private BorderPane root2Scene;
 private VBox optionsVBox;
 private Button spelareButton;
-private Button lagButton, matchPvPButton,turneringButton,matchTvTButton;
+private Button lagButton, matchPvPButton,turneringButton,matchTvTButton,backButton;
 private Label alternativ;
 
     //private EventHandler<ActionEvent> setOnAction(EventHandler<ActionEvent> actionEventEventHandler) {}
@@ -41,6 +41,8 @@ private Label alternativ;
         matchTvTButton = new Button("Match (Team vs Team)");
         matchTvTButton.setPrefWidth(150);
 
+        backButton = new Button("Tillbaka till inloggning-sidan");
+        backButton.setPrefWidth(150);
 
         matchPvPButton = new Button("Match (Player vs Player)");
         matchPvPButton.setPrefWidth(150);
@@ -52,7 +54,7 @@ private Label alternativ;
         alternativ = new Label("Välj vad du vill konfigurera");
         alternativ.setFont(new Font("System",18));
 
-        optionsVBox.getChildren().addAll(alternativ,spelareButton,lagButton, matchPvPButton,turneringButton,matchTvTButton);
+        optionsVBox.getChildren().addAll(alternativ,spelareButton,lagButton, matchPvPButton,turneringButton,matchTvTButton,backButton);
         optionsVBox.setAlignment(Pos.CENTER);
 
         root2Scene.setCenter(optionsVBox);
@@ -122,4 +124,20 @@ private Label alternativ;
         scene.setRoot(pane);
     }
 });*/
+
+    public Button getMatchTvTButton() {
+        return matchTvTButton;
+    }
+
+    public void setMatchTvTButton(Button matchTvTButton) {
+        this.matchTvTButton = matchTvTButton;
+    }
+
+    public Button getBackButton() {
+        return backButton;
+    }
+
+    public void setBackButton(Button backButton) {
+        this.backButton = backButton;
+    }
 }

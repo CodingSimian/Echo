@@ -60,14 +60,16 @@ public class Graphics  {
     // StartMetod som retunera en Stage till Main som sedan kör launch,
     // personalView ligger här tillfälligt
     public Stage start(){
-        scene = new Scene(daPvPView.getRootPvPScene(),900,900);
+        //scene = new Scene(daPvPView.getRootPvPScene(),900,900);
         daPvPView.getMainMenuButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 scene.setRoot(optionsMenu.getRoot2Scene());
             }
-        });;
-        //scene = new Scene(personalView.getPane(),900,900);
+        });
+        optionsMenu.getMatchPvPButton().setOnAction(e -> scene.setRoot(daPvPView.getRootPvPScene()));
+        optionsMenu.getBackButton().setOnAction(e -> scene.setRoot(personalView.getPane()));
+        scene = new Scene(personalView.getPane(),900,900);
         Mainstage = new Stage();
         Mainstage.setTitle("Pied Pipers Corporate Data Management");
         Mainstage.setScene(scene);

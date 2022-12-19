@@ -37,11 +37,14 @@ public class PersonalView extends VBox {
 
     private Button edit;
 
+    private Button logInButton,logOutButton;
     private HBox top;
 
     private PersonalController controller;
 
     private Stage popupWindow;
+
+    private TextField userTF;
 
 
     public PersonalView(){
@@ -62,29 +65,40 @@ public class PersonalView extends VBox {
         controller = new PersonalController();
         table = new TableView<Personal>();
         pane = new BorderPane();
+
+        userTF = new TextField();
+        userTF.setEditable(false); //Gör så man inte kan skriva något där man har sitt användarnamn
+        userTF.setMinWidth(200);
+        logInButton = new Button("Logga in");
+        logInButton.setPrefSize(70,50);
+        logInButton.setOnAction(e-> logInPressed());
+
+        logOutButton = new Button("Logga ut");
+        logOutButton.setPrefSize(70,50);
+
         add = new Button("Add");
+
         delete = new Button("Delete");
+
         edit = new Button("Edit");
+
         pane.setPrefSize(800,700);
         table.setPrefSize(200,300);
 
         add.setOnAction(this::addButtonPressed);
-        add.setPrefSize(50,50);
-        delete.setPrefSize(50,50);
+        add.setPrefSize(70,50);
+        delete.setPrefSize(70,50);
         delete.setOnAction(this::removeButtonPressed);
-        edit.setPrefSize(50,50);
+        edit.setPrefSize(70,50);
         edit.setOnAction(this::editButtonPressed);
+
         top = new HBox();
         top.setSpacing(15);
-        top.getChildren().addAll(add,delete,edit);
-
-
-
-
-
+        top.getChildren().addAll(add,delete,edit,logInButton,logOutButton,userTF);
 
         // Skapar Columerna i tabelen samt kopplar varje enskild colum till en property i Person Klassen
         // Så att varje Colum vet vad den ska visa för information
+
         TableColumn<Personal, String> firstNameColum = new TableColumn<Personal, String>("Firstname");
         firstNameColum.setCellValueFactory(new PropertyValueFactory<Personal,String>("firstName"));
 
@@ -113,6 +127,7 @@ public class PersonalView extends VBox {
         // Lägger ihop alla columer till en tabell samt kopplar tabellen till observabelList så den vet vart den ska leta efter objekt.
         table.getColumns().addAll(firstNameColum,lastNameColum,nickNameColum,adressNameColum,postalNumberColum,postalCityColum,countryColum,emailColum);
         //table.getItems().addAll(controller.getAllPersonal());
+
         table.setItems(controller.getPersonal1());
         table.setFocusTraversable(false);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -284,4 +299,48 @@ public class PersonalView extends VBox {
     }
 
 
+
+public void logInPressed(){
+        //try-catch metod där du får ett error meddelande om du inte klickat på en rad innan du klickar på logga-in knappen
+    //och ett if-else block för om du redan är inloggad som den användaren du har valt.
+
+    Personal pers = table.getSelectionModel().getSelectedItem();
+try{
+            if(userTF.getText().isEmpty()){
+                userTF.setText("Du är inloggad som: " + pers.getNickName());}
+            else{
+                popupWindow = new Stage();
+                popupWindow.initModality(Modality.APPLICATION_MODAL);
+                popupWindow.setTitle("Warning");
+                popupWindow.setMinHeight(50);
+                popupWindow.setMinWidth(450);
+                TextField tf = new TextField();
+                tf.setText("Du måste logga ut först för att kunna logga in som någon annan");
+                tf.setEditable(false);
+                VBox layout = new VBox();
+                layout.getChildren().add(tf);
+                Scene scene = new Scene(layout);
+                popupWindow.setScene(scene);
+                popupWindow.show();
+            }
+}catch (NullPointerException e){
+    popupWindow = new Stage();
+    popupWindow.initModality(Modality.APPLICATION_MODAL);
+    popupWindow.setTitle("Warning");
+    popupWindow.setMinHeight(50);
+    popupWindow.setMinWidth(450);
+
+    TextField tf = new TextField();
+    tf.setText("Klicka på den användaren du vill logga in som\n sedan klicka på logga-in-knappen");
+    tf.setEditable(false);
+    tf.setMinSize(400,100);
+    VBox layout = new VBox();
+    layout.getChildren().add(tf);
+    Scene scene = new Scene(layout);
+    popupWindow.setScene(scene);
+    popupWindow.show();
 }
+    };
+
+}
+
