@@ -44,8 +44,6 @@ public class PersonalController {
         EntityTransaction et = null;
         Personal pers = new Personal(fName,lName,nickName,adress,postalnNumber,postalCity,country,email); // TODO så att tillagda personal hämtar sitt id från databsen;
 
-
-
         try{
             et = em.getTransaction();
             et.begin();
@@ -94,8 +92,6 @@ public class PersonalController {
         }
         em.close();
 
-
-
     }
 
     public  void removePersonal2(Personal person){
@@ -129,8 +125,7 @@ public class PersonalController {
 
             em.flush();
 
-            et.commit(); //Denna lösning visar ingen error men gör inget ändå
-
+            et.commit();
 
 
         }

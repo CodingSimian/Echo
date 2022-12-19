@@ -42,7 +42,7 @@ private Label alternativ;
         matchTvTButton.setPrefWidth(150);
 
 
-        matchPvPButton = new Button("Match (Player vs Player");
+        matchPvPButton = new Button("Match (Player vs Player)");
         matchPvPButton.setPrefWidth(150);
 
         turneringButton = new Button("Turnering");
@@ -113,4 +113,13 @@ private Label alternativ;
     public void setAlternativ(Label alternativ) {
         this.alternativ = alternativ;
     }
+    /*homeButton.setOnAction(new EventHandler<ActionEvent>() {
+    @Override
+    public void handle(ActionEvent event) {
+        BorderPane pane = new BorderPane();
+        Label label1 = new Label("Test");
+        pane.setCenter(label1);
+        scene.setRoot(pane);
+    }
+});*/
 }

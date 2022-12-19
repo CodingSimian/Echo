@@ -149,6 +149,7 @@ public class PersonalView extends VBox {
          postalCity = new TextField();
          country = new TextField();
          email = new TextField();
+
          firstName.setPromptText("First name");
          lastName.setPromptText("Last name");
          nickName.setPromptText("Nick name");
@@ -157,7 +158,8 @@ public class PersonalView extends VBox {
          postalCity.setPromptText("City");
          country.setPromptText("Country");
          email.setPromptText("Email");
-         Button Submit = new Button("Sumbit");
+
+         Button Submit = new Button("Submit");
          Submit.setOnAction(this::register);
 
         Label popupLabel = new Label();

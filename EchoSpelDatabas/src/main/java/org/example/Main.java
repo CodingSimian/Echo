@@ -11,8 +11,10 @@ public class Main extends Application{
     static Graphics graphics;
 
     public static void main(String[] args) throws IOException {
-          graphics = new Graphics();
-         launch();
+        graphics = new Graphics();
+        launch();
+        //PvPController myController = new PvPController();
+
     }
 
 

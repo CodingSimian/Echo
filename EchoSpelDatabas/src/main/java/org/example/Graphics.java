@@ -2,7 +2,10 @@ package org.example;
 
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,7 +20,6 @@ public class Graphics  {
     private Scene scene;
     private Stage Mainstage;
     private PersonalView personalView;
-
     private PvPView daPvPView;
     private MiscViews optionsMenu;
 
@@ -29,6 +31,7 @@ public class Graphics  {
     Graphics() throws IOException {
     personalView = new PersonalView(); //Eftersom konstruktorn skapar upp root noden samt hela scenen,
     optionsMenu = new MiscViews();
+    daPvPView = new PvPView();
     }
 
     // Kommer användas för att byta mellan de olika Views,
@@ -57,7 +60,14 @@ public class Graphics  {
     // StartMetod som retunera en Stage till Main som sedan kör launch,
     // personalView ligger här tillfälligt
     public Stage start(){
-        scene = new Scene(optionsMenu.getRoot2Scene(),800,700);
+        scene = new Scene(daPvPView.getRootPvPScene(),900,900);
+        daPvPView.getMainMenuButton().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                scene.setRoot(optionsMenu.getRoot2Scene());
+            }
+        });;
+        //scene = new Scene(personalView.getPane(),900,900);
         Mainstage = new Stage();
         Mainstage.setTitle("Pied Pipers Corporate Data Management");
         Mainstage.setScene(scene);

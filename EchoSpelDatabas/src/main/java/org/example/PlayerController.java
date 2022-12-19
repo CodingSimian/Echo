@@ -10,6 +10,7 @@ public class PlayerController {
 
     public  void addPlayer(int Player_Id, String fName, String lName, String nickName, int postal_Numbr, String postal_city,
                            String country, String email, int team_Id  ){
+
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
 
@@ -37,6 +38,7 @@ public class PlayerController {
         }
         finally {
             em.close();
+
         }
     }
 
