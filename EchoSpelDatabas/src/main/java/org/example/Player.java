@@ -6,8 +6,8 @@ import java.io.Serializable;
 @Entity
 public class Player implements Serializable {
 
-  public void player() {
-  }
+    public Player() {
+    }
 
   @Id
   @Column(name = "player_Id")
@@ -40,13 +40,32 @@ public class Player implements Serializable {
   @Column(name = "team_Id")
   private int team_Id;
 
-  public int getPlayer_Id() {
+    public Player(int player_id) {
+    }
+    public Player(String getfName) {
+    }
+
+    public int getPlayer_Id() {
    return player_Id;
   }
 
   public void setPlayer_Id(int player_Id) {
    this.player_Id = player_Id;
   }
+    public Player(int player_Id, String fName, String lName, String nickName, String adress,
+                  int postal_Numbr, String postal_city, String country, String e_mail, int team_Id) {
+
+        this.player_Id = player_Id;
+        this.fName = fName;
+        this.lName = lName;
+        this.nickName = nickName;
+        this.adress = adress;
+        this.Postal_Numbr = postal_Numbr;
+        this.Postal_city = postal_city;
+        this.country = country;
+        this.e_mail = e_mail;
+        this.team_Id = team_Id;
+    }
 
   public String getfName() {
    return fName;
@@ -119,8 +138,4 @@ public class Player implements Serializable {
   public void setTeam_Id(int team_Id) {
    this.team_Id = team_Id;
   }
-
-  public void player_Id(){
-
-  }
- }
+}
