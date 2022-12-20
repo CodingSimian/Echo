@@ -22,6 +22,7 @@ public class Graphics  {
     private PersonalView personalView;
     private PvPView daPvPView;
     private MiscViews optionsMenu;
+    private TeamMatchView teamMatchView;
 
 
 
@@ -32,6 +33,7 @@ public class Graphics  {
     personalView = new PersonalView(); //Eftersom konstruktorn skapar upp root noden samt hela scenen,
     optionsMenu = new MiscViews();
     daPvPView = new PvPView();
+    teamMatchView = new TeamMatchView();
     }
 
     // Kommer användas för att byta mellan de olika Views,
@@ -47,7 +49,7 @@ public class Graphics  {
     public void PvPView(ActionEvent e){
 
     }
-    public void TvTview(ActionEvent e){
+    public void TeamMatchview(ActionEvent e){
 
     }
     public void spelareView(ActionEvent e){
@@ -60,16 +62,15 @@ public class Graphics  {
     // StartMetod som retunera en Stage till Main som sedan kör launch,
     // personalView ligger här tillfälligt
     public Stage start(){
-        //scene = new Scene(daPvPView.getRootPvPScene(),900,900);
-        daPvPView.getMainMenuButton().setOnAction(new EventHandler<ActionEvent>() {
+        teamMatchView.getMainMenuButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 scene.setRoot(optionsMenu.getRoot2Scene());
             }
         });
-        optionsMenu.getMatchPvPButton().setOnAction(e -> scene.setRoot(daPvPView.getRootPvPScene()));
+        optionsMenu.getMatchTvTButton().setOnAction(e -> scene.setRoot(teamMatchView.getRootTeamMatchScene()));
         optionsMenu.getBackButton().setOnAction(e -> scene.setRoot(personalView.getPane()));
-        scene = new Scene(personalView.getPane(),900,900);
+        scene = new Scene(teamMatchView.getRootTeamMatchScene(),900,900);
         Mainstage = new Stage();
         Mainstage.setTitle("Pied Pipers Corporate Data Management");
         Mainstage.setScene(scene);
@@ -116,7 +117,16 @@ public class Graphics  {
     public void setOptionsMenu(MiscViews optionsMenu) {
         this.optionsMenu = optionsMenu;
     }
+
+    public TeamMatchView getTeamMatchView() {
+        return teamMatchView;
+    }
+
+    public void setTeamMatchView(TeamMatchView teamMatchView) {
+        this.teamMatchView = teamMatchView;
+    }
 }
+
 
 
 

@@ -1,14 +1,34 @@
 package org.example;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javax.persistence.*;
 import java.util.List;
+import static org.example.Main.ENTITY_MANAGER_FACTORY;
+
 
 public class TeamMatchController {
-    protected static EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("Echo");
+    private ObservableList<TeamMatch> teamMatchObservableList; //Observable list används eftersom den ändrar sin grafiska aspekt så fort dess värden förändras
 
     public TeamMatchController() {
+        teamMatchObservableList = FXCollections.observableArrayList();
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        String strQuery = "SELECT c FROM TeamMatch c WHERE c.matchId IS NOT NULL";
+        TypedQuery<TeamMatch> tq = em.createQuery(strQuery, TeamMatch.class);
+
+        try {
+            List<TeamMatch> teamMatches = tq.getResultList();
+            teamMatchObservableList.addAll(teamMatches);
+            System.out.println(teamMatchObservableList.toString());
+        } catch (NoResultException e){
+            e.printStackTrace();
+
+        }finally {
+            em.close();
+
+        }
     }
 
-    public static void addTeamMatch(int teamId1, int teamId2, int gameId, int winnerId, String date , int scoreT1, int scoreT2) {
+    public void addTeamMatch(int teamId1, int teamId2, int gameId, int winnerId, String date , int scoreT1, int scoreT2) {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
 
@@ -77,6 +97,34 @@ public class TeamMatchController {
         }
     }
 
+
+    public void removeTeamMatch2(TeamMatch teamMatch){
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction transaction = null;
+        teamMatchObservableList.remove(teamMatch);
+        TeamMatch deleteMatch;
+
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            deleteMatch = entityManager.find(TeamMatch.class, teamMatch.getMatchId());
+
+            entityManager.remove(deleteMatch);
+            entityManager.flush();
+            transaction.commit();
+
+        } catch (Exception e) {
+            if(transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+
+        } finally {
+            entityManager.close();
+
+        }
+    }
+
     public void changeMatch(int matchId, int winnerId, int scoreT1, int scoreT2){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
@@ -129,6 +177,10 @@ public class TeamMatchController {
         }
         return teamMatchList;
 
+    }
+
+    public ObservableList<TeamMatch> getObservableTeamMatch(){
+        return teamMatchObservableList;
     }
 }
 
