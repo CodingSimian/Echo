@@ -31,19 +31,20 @@ public class TeamMatchController {
     public void addTeamMatch(int teamId1, int teamId2, int gameId, int winnerId, String date , int scoreT1, int scoreT2) {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
+        TeamMatch addMatch = new TeamMatch();
+
 
         try {
             et = em.getTransaction();
             et.begin();
-            TeamMatch match = new TeamMatch();
-            match.setTeamId1(teamId1);
-            match.setTeamId2(teamId2);
-            match.setGameId(gameId);
-            match.setWinnerId(winnerId);
-            match.setDate(date);
-            match.setScoreT1(scoreT1);
-            match.setScoreT2(scoreT2);
-            em.persist(match);
+            addMatch.setTeamId1(teamId1);
+            addMatch.setTeamId2(teamId2);
+            addMatch.setGameId(gameId);
+            addMatch.setWinnerId(winnerId);
+            addMatch.setDate(date);
+            addMatch.setScoreT1(scoreT1);
+            addMatch.setScoreT2(scoreT2);
+            em.persist(addMatch);
             et.commit();
         } catch (Exception e) {
             if(et != null) {
@@ -53,6 +54,7 @@ public class TeamMatchController {
         }
          finally {
             em.close();
+            teamMatchObservableList.add(addMatch);
         }
     }
 

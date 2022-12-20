@@ -136,8 +136,10 @@ public class TeamMatchView extends VBox {
         scoreT2 = new TextField(String.valueOf(selectedTeamMatch.getScoreT2()));
 
 
-      //matchIdLabel.setFont(Font.font("Arial",20));
+
         Label matchIdLabel = new Label("MatchId: ");
+        matchIdLabel.setFont(Font.font("Arial",20));
+        matchIdLabel.setAlignment(Pos.CENTER_LEFT);
         Label teamId1Label = new Label("Team Id 1: ");
         Label teamId2Label = new Label("Team Id 2: ");
         Label gameIdLabel = new Label ("Game Id: ");
@@ -145,6 +147,7 @@ public class TeamMatchView extends VBox {
         Label dateLabel = new Label ("Date: ");
         Label scoreT1Label = new Label ("Score Team 1: ");
         Label scoreT2Label = new Label("Score Team 2: ");
+        matchId.setPrefWidth(50);
         matchId.setEditable(false);
         teamId1.setEditable(false);
         teamId2.setEditable(false);
@@ -174,6 +177,7 @@ public class TeamMatchView extends VBox {
         VBox layout = new VBox(10);
         layout.getChildren().addAll(submit,matchIdLabel,matchId,teamId1Label,teamId1,teamId2Label,teamId2,gameIdLabel,gameId,winnerIdLabel,winnerId,dateLabel,date,scoreT1Label,scoreT1,scoreT2Label,scoreT2);
         layout.setAlignment(Pos.CENTER);
+        layout.setSpacing(15);
 
         Scene scene = new Scene (layout);
         popupWindow.setScene(scene);
