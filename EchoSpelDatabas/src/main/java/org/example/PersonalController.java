@@ -73,20 +73,12 @@ public class PersonalController {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         personal.remove(temp);
-        Personal database ;
-
-
-
         try{
             et = em.getTransaction();
             et.begin();
-            database = em.find(Personal.class,temp.getId());
-            database.uppDatePersonalInfo(temp.getFirstName(),temp.getLastName(),temp.getNickName(),temp.getAdress(), temp.getPostalNumber(), temp.getPostalCity(),temp.getCountry(),temp.getEmail());
-            em.merge(database);
+            em.merge(temp);
             et.commit();
-            personal.add(database);
-
-
+            personal.add(temp);
         }catch(Exception ex){
             if(et != null){
                 et.rollback();

@@ -3,6 +3,8 @@ package org.example;
 import javax.persistence.*;
 import java.io.Serializable;
 
+import static java.sql.Types.NULL;
+
 @Entity
 public class Player implements Serializable {
 
@@ -25,10 +27,10 @@ public class Player implements Serializable {
   @Column(name = "adress")
   private String adress;
 
-  @Column(name = "Postal_Numbr")
+  @Column(name = "postal_Nmbr")
   private int Postal_Numbr;
 
-  @Column(name = "Postal_city")
+  @Column(name = "postal_city")
   private String Postal_city;
 
   @Column(name = "country")
@@ -38,7 +40,8 @@ public class Player implements Serializable {
   private String e_mail;
 
   @Column(name = "team_Id")
-  private int team_Id;
+  private Integer  team_Id;
+
 
   public int getPlayer_Id() {
    return player_Id;
@@ -116,11 +119,20 @@ public class Player implements Serializable {
    return team_Id;
   }
 
-  public void setTeam_Id(int team_Id) {
+
+  public void setTeam_Id(Integer team_Id) {
    this.team_Id = team_Id;
+  }
+  public void setTeam_IdNull(){
+      this.team_Id = null;
   }
 
   public void player_Id(){
 
+  }
+
+  @Override
+    public String toString(){
+      return this.nickName;
   }
  }

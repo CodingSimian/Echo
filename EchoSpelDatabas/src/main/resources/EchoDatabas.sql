@@ -35,7 +35,7 @@ postal_Nmbr INT,
 postal_city VARCHAR(50),
 country VARCHAR(50),
 e_Mail VARCHAR(70),
-team_Id INT NOT NULL, 
+team_Id INT ,
 FOREIGN KEY (team_Id) REFERENCES team(team_Id)
 );
 

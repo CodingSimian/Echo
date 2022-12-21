@@ -282,10 +282,8 @@ public class PersonalView extends VBox {
 
     // Hämtar information från  formuläret och skickar vidare det objektet med uppdaterad information till PersonalController för att uppdatera i Databasen.
     public void uppdate(ActionEvent e){
-        Personal pers = table.getSelectionModel().getSelectedItem();
-        System.out.println(pers.getEmail() + " " + pers.getId());
-        pers.uppDatePersonalInfo(firstName.getText(),lastName.getText(),nickName.getText(),adress.getText(),Integer.parseInt(postalNumber.getText()), postalCity.getText(),country.getText(),email.getText());
-        controller.updatePersonal(pers);
+        table.getSelectionModel().getSelectedItem().uppDatePersonalInfo(firstName.getText(),lastName.getText(),nickName.getText(),adress.getText(),Integer.parseInt(postalNumber.getText()), postalCity.getText(),country.getText(),email.getText());
+        controller.updatePersonal(table.getSelectionModel().getSelectedItem());
         popupWindow.close();
     }
 

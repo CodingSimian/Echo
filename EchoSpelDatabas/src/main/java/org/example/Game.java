@@ -32,8 +32,8 @@ import javax.persistence.Table;
             this.gameName = gameName;
         }
 
-        @Column(name = "Points type")
-        private int pointType;
+       // @Column(name = "Points type")
+        //private int pointType;
 
         public Game() {
         }
@@ -44,6 +44,11 @@ import javax.persistence.Table;
 
         public void updateGame (String gameName){
             this.gameName = gameName;
+        }
+
+        @Override
+        public String toString(){
+            return this.gameName;
         }
 
 
