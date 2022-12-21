@@ -4,7 +4,6 @@ package org.example;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -21,15 +20,9 @@ public class Graphics  {
     private Scene scene;
     private Stage Mainstage;
     private PersonalView personalView;
-
-    private MiscViews miscView;
-    private TeamView teamView;
-
-
-    private Button homeButton;
-
-
-
+    private PvPView daPvPView;
+    private MiscViews optionsMenu;
+    private TeamMatchView teamMatchView;
 
 
 
@@ -37,20 +30,11 @@ public class Graphics  {
 
 
     Graphics() throws IOException {
-        homeButton = new Button("Home");
-        homeButton.setPrefSize(50,50);
-        personalView = new PersonalView(homeButton);
-        teamView = new TeamView(homeButton);
-        miscView = new MiscViews();
-
-
-        personalView.setHomeButton(homeButton);
-        homeButton.setOnAction(event -> scene.setRoot(miscView.getRoot2Scene()));
-
-
+    personalView = new PersonalView(); //Eftersom konstruktorn skapar upp root noden samt hela scenen,
+    optionsMenu = new MiscViews();
+    daPvPView = new PvPView();
+    teamMatchView = new TeamMatchView();
     }
-
-
 
     // Kommer användas för att byta mellan de olika Views,
     public void startview(ActionEvent e){
@@ -65,7 +49,7 @@ public class Graphics  {
     public void PvPView(ActionEvent e){
 
     }
-    public void TvTview(ActionEvent e){
+    public void TeamMatchview(ActionEvent e){
 
     }
     public void spelareView(ActionEvent e){
@@ -75,17 +59,74 @@ public class Graphics  {
 
 
 
-
     // StartMetod som retunera en Stage till Main som sedan kör launch,
     // personalView ligger här tillfälligt
     public Stage start(){
-        scene = new Scene(teamView.getTeamView(),800,700);
+        teamMatchView.getMainMenuButton().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                scene.setRoot(optionsMenu.getRoot2Scene());
+            }
+        });
+        optionsMenu.getMatchTvTButton().setOnAction(e -> scene.setRoot(teamMatchView.getRootTeamMatchScene()));
+        optionsMenu.getBackButton().setOnAction(e -> scene.setRoot(personalView.getPane()));
+        scene = new Scene(teamMatchView.getRootTeamMatchScene(),900,900);
         Mainstage = new Stage();
+        Mainstage.setTitle("Pied Pipers Corporate Data Management");
         Mainstage.setScene(scene);
 
         return Mainstage;
     }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
+
+    public Stage getMainstage() {
+        return Mainstage;
+    }
+
+    public void setMainstage(Stage mainstage) {
+        Mainstage = mainstage;
+    }
+
+    public PersonalView getPersonalView() {
+        return personalView;
+    }
+
+    public void setPersonalView(PersonalView personalView) {
+        this.personalView = personalView;
+    }
+
+    public PvPView getDaPvPView() {
+        return daPvPView;
+    }
+
+    public void setDaPvPView(PvPView daPvPView) {
+        this.daPvPView = daPvPView;
+    }
+
+    public MiscViews getOptionsMenu() {
+        return optionsMenu;
+    }
+
+    public void setOptionsMenu(MiscViews optionsMenu) {
+        this.optionsMenu = optionsMenu;
+    }
+
+    public TeamMatchView getTeamMatchView() {
+        return teamMatchView;
+    }
+
+    public void setTeamMatchView(TeamMatchView teamMatchView) {
+        this.teamMatchView = teamMatchView;
+    }
 }
+
 
 
 
