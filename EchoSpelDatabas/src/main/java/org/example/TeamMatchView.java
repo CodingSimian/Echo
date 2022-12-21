@@ -13,6 +13,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import javax.persistence.NoResultException;
+
 public class TeamMatchView extends VBox {
     private BorderPane rootTeamMatchScene;
     private TableView<TeamMatch> table;
@@ -119,12 +121,14 @@ public class TeamMatchView extends VBox {
 
 
     private void editButtonPressed(ActionEvent actionEvent) {
+
+        try {
         TeamMatch selectedTeamMatch = table.getSelectionModel().getSelectedItem();
         popupWindow = new Stage();
         popupWindow.initModality(Modality.APPLICATION_MODAL);
         popupWindow.setTitle("Edit Match");
-        popupWindow.setMinHeight(800);
-        popupWindow.setMinWidth(800);
+        popupWindow.setMinHeight(400);
+        popupWindow.setMinWidth(200);
 
         matchId = new TextField(String.valueOf(selectedTeamMatch.getMatchId()));
         teamId1 = new TextField(String.valueOf(selectedTeamMatch.getTeamId1()));
@@ -134,8 +138,6 @@ public class TeamMatchView extends VBox {
         date = new TextField(selectedTeamMatch.getDate());
         scoreT1 = new TextField(String.valueOf(selectedTeamMatch.getScoreT1()));
         scoreT2 = new TextField(String.valueOf(selectedTeamMatch.getScoreT2()));
-
-
 
         Label matchIdLabel = new Label("MatchId: ");
         matchIdLabel.setFont(Font.font("Arial",20));
@@ -163,16 +165,7 @@ public class TeamMatchView extends VBox {
         scoreT2.setPromptText("Team 2 Score");
 
         Button submit = new Button("Submit");
-        submit.setOnAction(this::changeTeamMatch);
-
-        Label popupLabel = new Label();
-        popupLabel.setText("Are you sure?");
-
-        Button noButton = new Button("No");
-        noButton.setOnAction(actionEvent1 -> popupWindow.close());
-
-        Button yesButton = new Button("Yes");
-        yesButton.setOnAction(actionEvent1 -> popupWindow.close());
+        submit.setOnAction(this::changeTeamMatch2);
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(submit,matchIdLabel,matchId,teamId1Label,teamId1,teamId2Label,teamId2,gameIdLabel,gameId,winnerIdLabel,winnerId,dateLabel,date,scoreT1Label,scoreT1,scoreT2Label,scoreT2);
@@ -182,9 +175,24 @@ public class TeamMatchView extends VBox {
         Scene scene = new Scene (layout);
         popupWindow.setScene(scene);
         popupWindow.show();
+        }catch (Exception e){
+            e.printStackTrace();
+            VBox selectAMatch = new VBox();
+            Button selectAMatchButton = new Button("Please select a match before trying to edit a match.");
+            selectAMatchButton.setOnAction(actionEvent1 -> popupWindow.close());
+            selectAMatch.setMinHeight(10);
+            selectAMatch.getChildren().addAll(selectAMatchButton);
+            selectAMatch.setAlignment(Pos.CENTER);
+            selectAMatch.setSpacing(10);
+            Scene scene = new Scene (selectAMatch);
+            popupWindow.setScene (scene);
+            popupWindow.show();
+        }
+
     }
 
     private void removeButtonPressed(ActionEvent actionEvent) {
+        try {
         popupWindow = new Stage();
         popupWindow.initModality(Modality.APPLICATION_MODAL);
         popupWindow.setTitle("Remove Match");
@@ -205,6 +213,19 @@ public class TeamMatchView extends VBox {
         Scene scene = new Scene (layout);
         popupWindow.setScene(scene);
         popupWindow.show();
+
+    }catch (Exception e){
+        VBox selectMatch = new VBox();
+        Button selectAMatchButton = new Button("You need to select a match to remove it.");
+        selectAMatchButton.setOnAction(actionEvent1 -> popupWindow.close());
+        selectMatch.setMinHeight(10);
+        selectMatch.getChildren().addAll(selectAMatchButton);
+        selectMatch.setAlignment(Pos.CENTER);
+        selectMatch.setSpacing(10);
+        Scene scene = new Scene (selectMatch);
+        popupWindow.setScene (scene);
+        popupWindow.show();
+    }
 
     }
 
@@ -256,17 +277,50 @@ public class TeamMatchView extends VBox {
         teamMatchViewController.addTeamMatch(Integer.parseInt(teamId1.getText()),Integer.parseInt(teamId2.getText()),Integer.parseInt(gameId.getText()),Integer.parseInt(winnerId.getText()),date.getText(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
         popupWindow.close();
     }
-    public void changeTeamMatch (ActionEvent actionEvent){
+ /*   public void changeTeamMatch (ActionEvent actionEvent){
         TeamMatch teamMatch = table.getSelectionModel().getSelectedItem();
-        System.out.println(teamMatch.getTeamId1() + " " + teamMatch.getTeamId2());
         teamMatchViewController.changeMatch(Integer.parseInt(matchId.getText()),Integer.parseInt(winnerId.getText()),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
         popupWindow.close();
+    } */
+
+    public void changeTeamMatch2 (ActionEvent actionEvent) {
+        TeamMatch teamMatch = table.getSelectionModel().getSelectedItem();
+        teamMatch.changeTeamMatch(Integer.parseInt(matchId.getText()),Integer.parseInt(teamId1.getText()),Integer.parseInt(teamId2.getText()),Integer.parseInt(gameId.getText()),Integer.parseInt(winnerId.getText()),date.getText(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
+        teamMatchViewController.changeMatch2(teamMatch);
+        popupWindow.close();
     }
+
     public void deleteMatch(ActionEvent actionEvent){
         TeamMatch TeamMatchSelected = table.getSelectionModel().getSelectedItem();
         teamMatchViewController.removeTeamMatch2(TeamMatchSelected);
         popupWindow.close();
     }
+
+ /*   public void areYouSure (ActionEvent actionEvent){
+        popupWindow = new Stage();
+        popupWindow.initModality(Modality.APPLICATION_MODAL);
+        popupWindow.setTitle("Are you sure?");
+        popupWindow.setWidth(200);
+        popupWindow.setMinHeight(400);
+
+        Label popupLabel = new Label();
+        popupLabel.setText("Are you sure?");
+        Button noButton = new Button("No");
+        noButton.setOnAction(actionEvent1 -> popupWindow.close());
+
+        Button yesButton = new Button("Yes");
+        yesButton.setOnAction(this::changeTeamMatch2);
+        yesButton.setOnAction(actionEvent1 -> popupWindow.close());
+
+        VBox layout = new VBox (10);
+        layout.getChildren().addAll(popupLabel, noButton, yesButton);
+        layout.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(layout);
+        popupWindow.setScene(scene);
+        popupWindow.show();
+
+    } */
 
     public TableView<TeamMatch> getTable (){
         return table;

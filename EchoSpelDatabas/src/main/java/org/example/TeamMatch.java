@@ -102,6 +102,17 @@ public class TeamMatch implements Serializable {
     public void setScoreT2(int scoreT2) {
         this.scoreT2 = scoreT2;
     }
+
+    public void changeTeamMatch (int matchId,int teamId1, int teamId2, int gameId, int winnerId, String date, int scoreT1, int scoreT2){
+        this.matchId = matchId;
+        this.teamId1 = teamId1;
+        this.teamId2 = teamId2;
+        this.gameId = gameId;
+        this.winnerId = winnerId;
+        this.date = date;
+        this.scoreT1 = scoreT1;
+        this.scoreT2 = scoreT2;
+    }
 }
 
 

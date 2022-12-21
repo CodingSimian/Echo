@@ -33,17 +33,18 @@ public class TeamMatchController {
         EntityTransaction et = null;
         TeamMatch addMatch = new TeamMatch();
 
+        addMatch.setTeamId1(teamId1);
+        addMatch.setTeamId2(teamId2);
+        addMatch.setGameId(gameId);
+        addMatch.setWinnerId(winnerId);
+        addMatch.setDate(date);
+        addMatch.setScoreT1(scoreT1);
+        addMatch.setScoreT2(scoreT2);
 
         try {
             et = em.getTransaction();
             et.begin();
-            addMatch.setTeamId1(teamId1);
-            addMatch.setTeamId2(teamId2);
-            addMatch.setGameId(gameId);
-            addMatch.setWinnerId(winnerId);
-            addMatch.setDate(date);
-            addMatch.setScoreT1(scoreT1);
-            addMatch.setScoreT2(scoreT2);
+
             em.persist(addMatch);
             et.commit();
         } catch (Exception e) {
@@ -76,7 +77,7 @@ public class TeamMatchController {
         return teamMatch;
     }
 
-    public void removeTeamMatch(int matchId){
+   /* public void removeTeamMatch(int matchId){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         TeamMatch teamMatch;
@@ -97,7 +98,7 @@ public class TeamMatchController {
         finally {
             em.close();
         }
-    }
+    } */
 
 
     public void removeTeamMatch2(TeamMatch teamMatch){
@@ -127,7 +128,7 @@ public class TeamMatchController {
         }
     }
 
-    public void changeMatch(int matchId, int winnerId, int scoreT1, int scoreT2){
+  /*  public void changeMatch(int matchId, int winnerId, int scoreT1, int scoreT2){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         TeamMatch teamMatch;
@@ -150,10 +151,36 @@ public class TeamMatchController {
         }
         finally {
             em.close();
+
         }
+    } */
+
+    public void changeMatch2 (TeamMatch changeMatch) {
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction et = null;
+        teamMatchObservableList.remove(changeMatch);
+        TeamMatch changeThisMatch;
+        try {
+            et = em.getTransaction();
+            et.begin();
+
+            changeThisMatch = em.find(TeamMatch.class, changeMatch.getMatchId());
+            changeThisMatch.changeTeamMatch(changeMatch.getMatchId(),changeMatch.getTeamId1(),changeMatch.getTeamId2(),changeMatch.getGameId(),changeMatch.getWinnerId(),changeMatch.getDate(),changeMatch.getScoreT1(),changeMatch.getScoreT2());
+            em.merge(changeThisMatch);
+            et.commit();
+            teamMatchObservableList.add(changeThisMatch);
+        } catch (Exception e){
+            if (et != null){
+                et.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+            em.close();
     }
 
-    public List<TeamMatch> getAllTeamMatches(){
+ /*   public List<TeamMatch> getAllTeamMatches(){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         List<TeamMatch> teamMatchList = null;
@@ -179,7 +206,7 @@ public class TeamMatchController {
         }
         return teamMatchList;
 
-    }
+    } */
 
     public ObservableList<TeamMatch> getObservableTeamMatch(){
         return teamMatchObservableList;
