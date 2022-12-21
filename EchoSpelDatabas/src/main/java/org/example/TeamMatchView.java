@@ -38,6 +38,7 @@ public class TeamMatchView extends VBox {
     private HBox buttonBox;
     private Label instructionsForTeamMatches;
 
+//Förstör inte mer
 
     public TeamMatchView(){
         buildUI();
