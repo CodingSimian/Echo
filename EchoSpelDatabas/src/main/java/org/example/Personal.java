@@ -67,7 +67,7 @@ public class Personal {
         this.adress = adress;
     }
 
-    public int getPostalNumber() {
+    public int getPostalNumber(){
         return postalNumber;
     }
 
@@ -124,4 +124,6 @@ public class Personal {
         this.country = country;
         this.email = email;
     }
+
+
 }

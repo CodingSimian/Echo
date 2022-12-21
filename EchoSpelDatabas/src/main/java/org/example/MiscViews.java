@@ -13,7 +13,7 @@ public class MiscViews { //Denna java klass ska användas för att kunna skapa u
 private BorderPane root2Scene;
 private VBox optionsVBox;
 private Button spelareButton;
-private Button lagButton, matchPvPButton,turneringButton,matchTvTButton,backButton;
+private Button lagButton, matchPvPButton,turneringButton,matchTvTButton;
 private Label alternativ;
 
     //private EventHandler<ActionEvent> setOnAction(EventHandler<ActionEvent> actionEventEventHandler) {}
@@ -41,10 +41,8 @@ private Label alternativ;
         matchTvTButton = new Button("Match (Team vs Team)");
         matchTvTButton.setPrefWidth(150);
 
-        backButton = new Button("Tillbaka till inloggning-sidan");
-        backButton.setPrefWidth(150);
 
-        matchPvPButton = new Button("Match (Player vs Player)");
+        matchPvPButton = new Button("Match (Player vs Player");
         matchPvPButton.setPrefWidth(150);
 
         turneringButton = new Button("Turnering");
@@ -54,7 +52,7 @@ private Label alternativ;
         alternativ = new Label("Välj vad du vill konfigurera");
         alternativ.setFont(new Font("System",18));
 
-        optionsVBox.getChildren().addAll(alternativ,spelareButton,lagButton, matchPvPButton,turneringButton,matchTvTButton,backButton);
+        optionsVBox.getChildren().addAll(alternativ,spelareButton,lagButton, matchPvPButton,turneringButton,matchTvTButton);
         optionsVBox.setAlignment(Pos.CENTER);
 
         root2Scene.setCenter(optionsVBox);
@@ -114,30 +112,5 @@ private Label alternativ;
 
     public void setAlternativ(Label alternativ) {
         this.alternativ = alternativ;
-    }
-    /*homeButton.setOnAction(new EventHandler<ActionEvent>() {
-    @Override
-    public void handle(ActionEvent event) {
-        BorderPane pane = new BorderPane();
-        Label label1 = new Label("Test");
-        pane.setCenter(label1);
-        scene.setRoot(pane);
-    }
-});*/
-
-    public Button getMatchTvTButton() {
-        return matchTvTButton;
-    }
-
-    public void setMatchTvTButton(Button matchTvTButton) {
-        this.matchTvTButton = matchTvTButton;
-    }
-
-    public Button getBackButton() {
-        return backButton;
-    }
-
-    public void setBackButton(Button backButton) {
-        this.backButton = backButton;
     }
 }

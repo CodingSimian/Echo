@@ -37,18 +37,17 @@ public class PersonalView extends VBox {
 
     private Button edit;
 
-    private Button logInButton,logOutButton;
+    private Button homeButton;
+
     private HBox top;
 
     private PersonalController controller;
 
     private Stage popupWindow;
 
-    private TextField userTF;
 
-
-    public PersonalView(){
-        buildUI();
+    public PersonalView(Button button){
+        buildUI(button);
     }
 
 
@@ -61,45 +60,36 @@ public class PersonalView extends VBox {
        objekt som finns i listan det medgör att taballen uppdateras automatiskts när något objekt läggs till eller tas bort från ObservabelList.
 
      */
-    private void buildUI(){
+    private void buildUI(Button button){
         controller = new PersonalController();
         table = new TableView<Personal>();
         pane = new BorderPane();
-
-        userTF = new TextField();
-        userTF.setEditable(false); //Gör så man inte kan skriva något där man har sitt användarnamn
-        userTF.setMinWidth(200);
-        logInButton = new Button("Logga in");
-        logInButton.setPrefSize(70,50);
-        logInButton.setOnAction(e-> logInPressed());
-
-        logOutButton = new Button("Logga ut");
-        logOutButton.setPrefSize(70,50);
-
         add = new Button("Add");
-
         delete = new Button("Delete");
-
         edit = new Button("Edit");
-
+        homeButton = button;
         pane.setPrefSize(800,700);
         table.setPrefSize(200,300);
 
         add.setOnAction(this::addButtonPressed);
-        add.setPrefSize(70,50);
-        delete.setPrefSize(70,50);
+        add.setPrefSize(50,50);
+        delete.setPrefSize(50,50);
         delete.setOnAction(this::removeButtonPressed);
-        edit.setPrefSize(70,50);
+        edit.setPrefSize(50,50);
         edit.setOnAction(this::editButtonPressed);
-
         top = new HBox();
         top.setSpacing(15);
-        top.getChildren().addAll(add,delete,edit,logInButton,logOutButton,userTF);
+        top.getChildren().addAll(homeButton,add,delete,edit);
+
+
+
+
+
+
 
         // Skapar Columerna i tabelen samt kopplar varje enskild colum till en property i Person Klassen
         // Så att varje Colum vet vad den ska visa för information
-
-        TableColumn<Personal, String> firstNameColum = new TableColumn<Personal, String>("Firstname");
+        firstNameColum = new TableColumn<Personal, String>("Firstname");
         firstNameColum.setCellValueFactory(new PropertyValueFactory<Personal,String>("firstName"));
 
         TableColumn<Personal,String > lastNameColum = new TableColumn<Personal, String>("Lastname");
@@ -127,8 +117,7 @@ public class PersonalView extends VBox {
         // Lägger ihop alla columer till en tabell samt kopplar tabellen till observabelList så den vet vart den ska leta efter objekt.
         table.getColumns().addAll(firstNameColum,lastNameColum,nickNameColum,adressNameColum,postalNumberColum,postalCityColum,countryColum,emailColum);
         //table.getItems().addAll(controller.getAllPersonal());
-
-        table.setItems(controller.getPersonal1());
+        table.setItems(controller.getPersonal1()); // Viktig rad.
         table.setFocusTraversable(false);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -137,6 +126,10 @@ public class PersonalView extends VBox {
         pane.setTop(top);
         pane.setCenter(table);
         //getChildren().add(table);
+    }
+    public void setHomeButton(Button button){
+        homeButton = button;
+
     }
 
     // retunerar rootnoden , skall användas av Graphics klassen
@@ -152,10 +145,10 @@ public class PersonalView extends VBox {
     // Samt skickar vidare till en metod som anropar PersonalController att skapa och lägga till det nya Objektet i databsen
     public void addButtonPressed(ActionEvent event){
          popupWindow = new Stage();
-        popupWindow.initModality(Modality.APPLICATION_MODAL);
-        popupWindow.setTitle("Formulär?");
-        popupWindow.setMinHeight(400);
-        popupWindow.setMinWidth(200);
+         popupWindow.initModality(Modality.APPLICATION_MODAL);
+         popupWindow.setTitle("Formulär?");
+         popupWindow.setMinHeight(400);
+         popupWindow.setMinWidth(200);
          firstName = new TextField();
          lastName = new TextField();
          nickName = new TextField();
@@ -164,7 +157,6 @@ public class PersonalView extends VBox {
          postalCity = new TextField();
          country = new TextField();
          email = new TextField();
-
          firstName.setPromptText("First name");
          lastName.setPromptText("Last name");
          nickName.setPromptText("Nick name");
@@ -173,8 +165,7 @@ public class PersonalView extends VBox {
          postalCity.setPromptText("City");
          country.setPromptText("Country");
          email.setPromptText("Email");
-
-         Button Submit = new Button("Submit");
+         Button Submit = new Button("Sumbit");
          Submit.setOnAction(this::register);
 
         Label popupLabel = new Label();
@@ -254,7 +245,7 @@ public class PersonalView extends VBox {
             }
             System.out.println(person.getId()+ " " +person.getAdress());
             //controller.removePersonal(person);
-            controller.removePersonal2(person); //Viktors metod
+            controller.removePersonal(person); //Viktors metod
         }
         popupWindow.close();
     }
@@ -291,56 +282,10 @@ public class PersonalView extends VBox {
 
     // Hämtar information från  formuläret och skickar vidare det objektet med uppdaterad information till PersonalController för att uppdatera i Databasen.
     public void uppdate(ActionEvent e){
-        Personal pers = table.getSelectionModel().getSelectedItem();
-        System.out.println(pers.getEmail() + " " + pers.getId());
-        pers.uppDatePersonalInfo(firstName.getText(),lastName.getText(),nickName.getText(),adress.getText(),Integer.parseInt(postalNumber.getText()), postalCity.getText(),country.getText(),email.getText());
-        controller.updatePersonal(pers);
+        table.getSelectionModel().getSelectedItem().uppDatePersonalInfo(firstName.getText(),lastName.getText(),nickName.getText(),adress.getText(),Integer.parseInt(postalNumber.getText()), postalCity.getText(),country.getText(),email.getText());
+        controller.updatePersonal(table.getSelectionModel().getSelectedItem());
         popupWindow.close();
     }
 
 
-
-public void logInPressed(){
-        //try-catch metod där du får ett error meddelande om du inte klickat på en rad innan du klickar på logga-in knappen
-    //och ett if-else block för om du redan är inloggad som den användaren du har valt.
-
-    Personal pers = table.getSelectionModel().getSelectedItem();
-try{
-            if(userTF.getText().isEmpty()){
-                userTF.setText("Du är inloggad som: " + pers.getNickName());}
-            else{
-                popupWindow = new Stage();
-                popupWindow.initModality(Modality.APPLICATION_MODAL);
-                popupWindow.setTitle("Warning");
-                popupWindow.setMinHeight(50);
-                popupWindow.setMinWidth(450);
-                TextField tf = new TextField();
-                tf.setText("Du måste logga ut först för att kunna logga in som någon annan");
-                tf.setEditable(false);
-                VBox layout = new VBox();
-                layout.getChildren().add(tf);
-                Scene scene = new Scene(layout);
-                popupWindow.setScene(scene);
-                popupWindow.show();
-            }
-}catch (NullPointerException e){
-    popupWindow = new Stage();
-    popupWindow.initModality(Modality.APPLICATION_MODAL);
-    popupWindow.setTitle("Warning");
-    popupWindow.setMinHeight(50);
-    popupWindow.setMinWidth(450);
-
-    TextField tf = new TextField();
-    tf.setText("Klicka på den användaren du vill logga in som\n sedan klicka på logga-in-knappen");
-    tf.setEditable(false);
-    tf.setMinSize(400,100);
-    VBox layout = new VBox();
-    layout.getChildren().add(tf);
-    Scene scene = new Scene(layout);
-    popupWindow.setScene(scene);
-    popupWindow.show();
 }
-    };
-
-}
-

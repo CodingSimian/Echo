@@ -3,68 +3,13 @@ package org.example;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import java.util.ArrayList;
-
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
 public class PlayerController {
 
-    ArrayList<Player> allPlayers = new ArrayList<Player>();
-
-    public void getallPlayers (int Player_Id){
-
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-
-        for( Player p : allPlayers){
-            getallPlayers(p.getPlayer_Id());
-        }
-        try{
-            et = em.getTransaction();
-            et.begin();
-            Player player = new Player();
-            player.setPlayer_Id(player.getPlayer_Id());
-            em.persist(player);
-            et.commit();
-
-        }catch (Exception ex) {
-            if(et != null){
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-        }
-    }
-
-    public void getPlayer (int Player_Id){
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-
-        try{
-            et = em.getTransaction();
-            et.begin();
-            Player player = new Player();
-            player.setPlayer_Id(player.getPlayer_Id());
-            em.persist(player);
-            et.commit();
-
-    }catch (Exception ex) {
-            if(et != null){
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-          }
-        }
-
 
     public  void addPlayer(int Player_Id, String fName, String lName, String nickName, int postal_Numbr, String postal_city,
                            String country, String email, int team_Id  ){
-
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
 
@@ -92,7 +37,6 @@ public class PlayerController {
         }
         finally {
             em.close();
-
         }
     }
 

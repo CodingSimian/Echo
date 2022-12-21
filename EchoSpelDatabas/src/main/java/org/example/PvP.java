@@ -31,11 +31,11 @@ public class PvP implements Serializable {
     //I java.
     private String date;
 
-    @Column(name = "score_P1")
+    @Column(name = "score_p1")
     private int score_p1;
 
-    @Column(name = "score_P2")
-    private int score_P2; //player_Id1-2 och game_Id är foreign key, använd
+    @Column(name = "score_p2")
+    private int score_p2; //player_Id1-2 och game_Id är foreign key, använd
     //ManyToOne elr JoinColumn, player_id referar till player tabellen, och game_Id referar till game tabellen
 
 
@@ -47,7 +47,7 @@ public class PvP implements Serializable {
         this.match_Id = match_Id;
     }
 
-    public int getPlayer_Id1() {
+    public int getPlayer_id1() {
         return player_id1;
     }
 
@@ -55,7 +55,7 @@ public class PvP implements Serializable {
         this.player_id1 = player_id1;
     }
 
-    public int getPlayer_Id2() {
+    public int getPlayer_id2() {
         return player_id2;
     }
 
@@ -87,7 +87,7 @@ public class PvP implements Serializable {
         this.date = date;
     }
 
-    public int getScore_P1() {
+    public int getScore_p1() {
         return score_p1;
     }
 
@@ -95,21 +95,11 @@ public class PvP implements Serializable {
         this.score_p1 = score_p1;
     }
 
-    public int getScore_P2() {
-        return score_P2;
+    public int getScore_p2() {
+        return score_p2;
     }
 
-    public void setScore_P2(int score_p2) {
-        this.score_P2 = score_p2;
-    }
-
-    public void updateMatch( int player_id1, int player_id2, int game_Id, int winner_Id, String date, int score_p1, int score_P2) {
-        this.player_id1 = player_id1;
-        this.player_id2 = player_id2;
-        this.game_Id = game_Id;
-        this.winner_Id = winner_Id;
-        this.date = date;
-        this.score_p1 = score_p1;
-        this.score_P2 = score_P2;
+    public void setScore_p2(int score_p2) {
+        this.score_p2 = score_p2;
     }
 }
