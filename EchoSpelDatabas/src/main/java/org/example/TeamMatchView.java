@@ -13,6 +13,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
+import static org.example.Main.ENTITY_MANAGER_FACTORY;
+
 public class TeamMatchView extends VBox {
     private BorderPane rootTeamMatchScene;
     private TableView<TeamMatch> table;
@@ -35,12 +41,12 @@ public class TeamMatchView extends VBox {
     private HBox buttonBox;
     private Label instructionsForTeamMatches;
 
-    private ChoiceBox <Team> team1ChoiceBox;
+    private ChoiceBox<Team> team1ChoiceBox;
     private ChoiceBox<Team> team2ChoiceBox;
     private ChoiceBox<Game> gameChoiceBox;
-    private ChoiceBox<TeamMatch> winnerChoice;
+    private ChoiceBox<Team> winnerChoice;
 
-    ObservableList<Team> teamList = FXCollections.observableArrayList();
+    ObservableList<Team> teamObservableList = FXCollections.observableArrayList();
     ObservableList<Game> gameObservableList = FXCollections.observableArrayList(); //Behövs för att kunna se lista på Spel
 
     public TeamMatchView(){
@@ -120,15 +126,15 @@ public class TeamMatchView extends VBox {
         popupWindow.setWidth(200);
         popupWindow.setMinHeight(400);
 
-        team1ChoiceBox = new ChoiceBox<>(teamList);
+        team1ChoiceBox = new ChoiceBox<>(teamObservableList);
         team1ChoiceBox.setItems(teamController.getTeamObservableList());
-        team2ChoiceBox = new ChoiceBox<>(teamList);
+        team2ChoiceBox = new ChoiceBox<>(teamObservableList);
         team2ChoiceBox.setItems(teamController.getTeamObservableList());
-        //  gameChoiceBox = new ChoiceBox<>(gameObservableList);
-        //  gameChoiceBox.setItems(gameController.getGameObservableList());
+       // gameChoiceBox = new ChoiceBox<>(gameObservableList);
+       // gameChoiceBox.setItems(gameController.getGameObservableList());
 
-        teamId1 = new TextField();
-        teamId2 = new TextField();
+
+
         gameId = new TextField();
         date = new TextField();
 
@@ -137,8 +143,6 @@ public class TeamMatchView extends VBox {
         Label gameIdLabel = new Label ("Game Id: ");
         Label dateLabel = new Label ("Date: ");
 
-        teamId1.setPromptText("Team 1 Id");
-        teamId2.setPromptText("Team 2 Id");
         gameId.setPromptText("Game Id");
         date.setPromptText("Date");
 
@@ -147,7 +151,7 @@ public class TeamMatchView extends VBox {
         Submit.setOnAction(this::addNewTeamMatch);
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(Submit,teamId1Label, team1ChoiceBox,teamId2Label, team2ChoiceBox,gameIdLabel,gameId,dateLabel,date);
+        layout.getChildren().addAll(Submit,teamId1Label,team1ChoiceBox,teamId2Label, team2ChoiceBox,gameIdLabel,gameId,dateLabel,date);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
@@ -277,14 +281,29 @@ public class TeamMatchView extends VBox {
 
 
     public void addNewTeamMatch(ActionEvent actionEvent) {
-        teamMatchViewController.addTeamMatch(team1ChoiceBox.getValue().getTeamId(),team2ChoiceBox.getValue().getTeamId(),Integer.parseInt(gameId.getText()),date.getText());
-        popupWindow.close();
+
+        try {
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        TeamMatch selectedTeamMatch;
+
+        Team team1ForTeamMatch = team1ChoiceBox.getValue();
+        Team team2ForTeamMatch = team2ChoiceBox.getValue();
+        Game gameForTeamMatch = gameController.getGame(1);
+      // Game gameForTeamMatch = gameChoicebox.getvalue.getid
+      // if team1ForTeamMatch.getGameId == gameForTeamMatch.getId && team2ForTeamMatch.getGameID == gameForTeamMatch.getId
+
+        teamMatchViewController.addTeamMatch(team1ForTeamMatch,team2ForTeamMatch,gameForTeamMatch,date.getText());
+            em.close();
+            popupWindow.close();
+        }catch (NoResultException e) {
+            e.printStackTrace();
+        }
     }
 
 
     public void changeTeamMatch2 (ActionEvent actionEvent) {
         TeamMatch teamMatch = table.getSelectionModel().getSelectedItem();
-        teamMatch.changeTeamMatch(Integer.parseInt(matchId.getText()),teamId1.getText()),Integer.parseInt(teamId2.getText()),Integer.parseInt(gameId.getText()),Integer.parseInt(winnerId.getText()),date.getText(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
+      //  teamMatch.changeTeamMatch(Integer.parseInt(matchId.getText()),teamId1.getText()),Integer.parseInt(teamId2.getText()),Integer.parseInt(gameId.getText()),Integer.parseInt(winnerId.getText()),date.getText(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
         teamMatchViewController.changeMatch2(teamMatch);
         popupWindow.close();
     }
@@ -294,6 +313,7 @@ public class TeamMatchView extends VBox {
         teamMatchViewController.removeTeamMatch2(TeamMatchSelected);
         popupWindow.close();
     }
+
 
     public TableView<TeamMatch> getTable (){
         return table;

@@ -17,20 +17,14 @@ public class TeamMatch implements Serializable {
         private int matchId;
 
         @ManyToOne
-       // @Column(name = "team_Id1")
-       // private int teamId1;
-        @JoinColumn (name = "teamId_1")
+        @JoinColumn (name = "team_Id1")
         private Team teamId1;
 
         @ManyToOne
-       // @Column(name = "team_Id2")
-       // private int teamId2;
-        @JoinColumn (name = "teamId_2")
+        @JoinColumn (name = "team_Id2")
         private Team teamId2;
 
         @ManyToOne
-       // @Column(name = "game_Id" )
-       // private int gameId;
         @JoinColumn (name = "game_Id")
         private Game gameId;
 
@@ -77,31 +71,6 @@ public class TeamMatch implements Serializable {
     public void setGameId(Game gameId) {
         this.gameId = gameId;
     }
-
-
-    /*  public int getTeamId1() {
-        return teamId1;
-    }
-
-    public void setTeamId1(int teamId1) {
-        this.teamId1 = teamId1;
-    }
-
-    public int getTeamId2() {
-        return teamId2;
-    }
-
-    public void setTeamId2(int teamId2) {
-        this.teamId2 = teamId2;
-    }
-
-    public int getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
-    } */
 
     public int getWinnerId() {
         return winnerId;
