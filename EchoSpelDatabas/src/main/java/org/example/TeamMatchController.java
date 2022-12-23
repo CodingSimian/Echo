@@ -27,7 +27,7 @@ public class TeamMatchController {
         }
     }
 
-    public void addTeamMatch(int teamId1, int teamId2, int gameId, String date) {
+    public void addTeamMatch(Team teamId1, Team teamId2, Game gameId, String date) {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         TeamMatch addMatch = new TeamMatch();

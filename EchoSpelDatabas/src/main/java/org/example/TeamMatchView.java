@@ -38,6 +38,7 @@ public class TeamMatchView extends VBox {
     private ChoiceBox <Team> team1ChoiceBox;
     private ChoiceBox<Team> team2ChoiceBox;
     private ChoiceBox<Game> gameChoiceBox;
+    private ChoiceBox<TeamMatch> winnerChoice;
 
     ObservableList<Team> teamList = FXCollections.observableArrayList();
     ObservableList<Game> gameObservableList = FXCollections.observableArrayList(); //Behövs för att kunna se lista på Spel
@@ -159,11 +160,17 @@ public class TeamMatchView extends VBox {
 
         try {
         TeamMatch selectedTeamMatch = table.getSelectionModel().getSelectedItem();
+      //  Team selectedTeams = new Team();
         popupWindow = new Stage();
         popupWindow.initModality(Modality.APPLICATION_MODAL);
         popupWindow.setTitle("Edit Match");
         popupWindow.setMinHeight(400);
         popupWindow.setMinWidth(400);
+
+        ChoiceBox<TeamMatch> winnerChoice = new ChoiceBox();
+        winnerChoice.getItems().addAll();
+      //  selectedTeams.getName();
+
 
         matchId = new TextField(String.valueOf(selectedTeamMatch.getMatchId()));
         teamId1 = new TextField(String.valueOf(selectedTeamMatch.getTeamId1()));
@@ -202,7 +209,7 @@ public class TeamMatchView extends VBox {
         submit.setOnAction(this::changeTeamMatch2);
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(submit,matchIdLabel,matchId,teamId1Label,teamId1,teamId2Label,teamId2,gameIdLabel,gameId,winnerIdLabel,winnerId,dateLabel,date,scoreT1Label,scoreT1,scoreT2Label,scoreT2);
+        layout.getChildren().addAll(submit,matchIdLabel,matchId,teamId1Label,teamId1,teamId2Label,teamId2,gameIdLabel,gameId,winnerIdLabel,winnerChoice,dateLabel,date,scoreT1Label,scoreT1,scoreT2Label,scoreT2);
         layout.setAlignment(Pos.CENTER);
         layout.setSpacing(15);
 
@@ -277,7 +284,7 @@ public class TeamMatchView extends VBox {
 
     public void changeTeamMatch2 (ActionEvent actionEvent) {
         TeamMatch teamMatch = table.getSelectionModel().getSelectedItem();
-        teamMatch.changeTeamMatch(Integer.parseInt(matchId.getText()),Integer.parseInt(teamId1.getText()),Integer.parseInt(teamId2.getText()),Integer.parseInt(gameId.getText()),Integer.parseInt(winnerId.getText()),date.getText(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
+        teamMatch.changeTeamMatch(Integer.parseInt(matchId.getText()),teamId1.getText()),Integer.parseInt(teamId2.getText()),Integer.parseInt(gameId.getText()),Integer.parseInt(winnerId.getText()),date.getText(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
         teamMatchViewController.changeMatch2(teamMatch);
         popupWindow.close();
     }
