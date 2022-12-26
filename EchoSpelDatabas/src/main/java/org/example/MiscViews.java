@@ -1,41 +1,147 @@
 package org.example;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+//Denna klass ska starta upp Huvudmenyn samt inloggningssidan.
 
 import java.io.IOException;
 
-public class MiscViews { //Denna java klass ska användas för att kunna skapa upp menyn.
-private BorderPane root2Scene;
-private VBox optionsVBox;
-private Button spelareButton;
-private Button lagButton, matchPvPButton,turneringButton,matchTvTButton,backButton;
-private Label alternativ;
+public class MiscViews {
+    private BorderPane root2Scene;
+    private VBox optionsVBox;
+    private Button lagButton, matchPvPButton, turneringButton, matchTvTButton, backButton, logInButton, logOutButton,spelareButton;
+    private Label alternativ;
 
-private TextField userTF;
+    private TextField userTF,userTFSecondScene;
 
-    //private EventHandler<ActionEvent> setOnAction(EventHandler<ActionEvent> actionEventEventHandler) {}
-//private MiscController controller;
+    private Stage popupWindow;
+
+    private HBox top;
+
+    private PersonalController controller;
+
+
+    private BorderPane startRoot;
+
+    private TableView<Personal> table;
+
+    private TableColumn<Personal, String> firstNameColum;
+    private TableColumn<Personal, String> lastNameColum;
+    private TableColumn<Personal, String> nickNameColum;
 
 
     public MiscViews() throws IOException {
         buildUI();
+        buildUI2();
     }
+
+
+    public void buildUI2() {
+        controller = new PersonalController();
+        userTF = new TextField();
+        userTF.setEditable(false);
+
+
+        table = new TableView<Personal>();
+        startRoot = new BorderPane();
+        table.setPrefSize(200, 300);
+
+        logInButton = new Button("Logga in");
+        logInButton.setOnAction(this::logInPressed);
+
+        logOutButton = new Button("Logga ut");
+        logOutButton.setOnAction(this::logOutPressed);
+
+        top = new HBox();
+        top.setSpacing(15);
+        top.getChildren().addAll(logInButton, logOutButton, userTF);
+
+        firstNameColum = new TableColumn<Personal, String>("Firstname");
+        firstNameColum.setCellValueFactory(new PropertyValueFactory<Personal, String>("firstName"));
+
+        TableColumn<Personal, String> lastNameColum = new TableColumn<Personal, String>("Lastname");
+        lastNameColum.setCellValueFactory(new PropertyValueFactory<Personal, String>("lastName"));
+
+        TableColumn<Personal, String> nickNameColum = new TableColumn<Personal, String>("NickName");
+        nickNameColum.setCellValueFactory(new PropertyValueFactory<Personal, String>("nickName"));
+
+        table.getColumns().addAll(firstNameColum, lastNameColum, nickNameColum);
+        table.setItems(controller.getPersonal1());
+        table.setFocusTraversable(false);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        startRoot.setTop(top);
+        startRoot.setCenter(table);
+
+    }
+
+    private void logOutPressed(ActionEvent actionEvent) {
+        userTF.setText("");
+    }
+
+    public void logInPressed(ActionEvent actionEvent) {
+        Personal pers = table.getSelectionModel().getSelectedItem();
+
+        //String daName = pers.getNickName();
+        try {
+            if (userTF.getText().isEmpty()) {
+                userTF.setText(pers.getNickName());
+
+            } else if (pers.getNickName().equals(userTF.getText())) {
+                userTF.setText(pers.getNickName());
+
+            } else if (pers.getNickName().equals(userTF.getText()) == false) {
+                popupWindow = new Stage();
+                popupWindow.initModality(Modality.APPLICATION_MODAL);
+                popupWindow.setTitle("Warning");
+                popupWindow.setMinHeight(50);
+                popupWindow.setMinWidth(450);
+                TextField tf = new TextField();
+                tf.setText("Du måste logga ut först för att kunna logga in som någon annan");
+                tf.setEditable(false);
+                VBox layout = new VBox();
+                layout.getChildren().add(tf);
+                Scene scene = new Scene(layout);
+                popupWindow.setScene(scene);
+                popupWindow.show();
+            }
+        } catch (NullPointerException e) {
+            popupWindow = new Stage();
+            popupWindow.initModality(Modality.APPLICATION_MODAL);
+            popupWindow.setTitle("Warning");
+            popupWindow.setMinHeight(50);
+            popupWindow.setMinWidth(450);
+
+            TextField tf = new TextField();
+            tf.setText("Klicka på den användaren du vill logga in som\n sedan klicka på logga-in-knappen");
+            tf.setEditable(false);
+            tf.setMinSize(400, 100);
+            VBox layout = new VBox();
+            layout.getChildren().add(tf);
+            Scene scene = new Scene(layout);
+            popupWindow.setScene(scene);
+            popupWindow.show();
+
+        }
+    }
+
     public void buildUI() throws IOException {
         root2Scene = new BorderPane();
         optionsVBox = new VBox();
         optionsVBox.setSpacing(30);
 
 
-         spelareButton = new Button("Spelare");
-        //spelareButton.setOnAction(ActionEvent -> scene.setRoot());
+        spelareButton = new Button("Spelare");
         spelareButton.setPrefWidth(150);
-        //ALlt detta kan vi mycket enklare och snyggare ändra med css senare i projektet, men tills vidare duger detta
 
         lagButton = new Button("Lag");
         //lagButton.setOnAction(ActionEvent -> scene.setRoot());
@@ -55,15 +161,17 @@ private TextField userTF;
         turneringButton.setPrefWidth(150);
 
         alternativ = new Label("Välj vad du vill konfigurera");
-        alternativ.setFont(new Font("System",18));
-        userTF = new TextField();
+        alternativ.setFont(new Font("System", 18));
+        userTFSecondScene = new TextField();
+        userTFSecondScene.setEditable(false);
 
-        optionsVBox.getChildren().addAll(alternativ,spelareButton,lagButton, matchPvPButton,turneringButton,matchTvTButton,backButton);
+        optionsVBox.getChildren().addAll(alternativ, spelareButton, lagButton, matchPvPButton, turneringButton, matchTvTButton, backButton);
         optionsVBox.setAlignment(Pos.CENTER);
-        userTF.setEditable(false);
+
         root2Scene.setCenter(optionsVBox);
-        root2Scene.setTop(userTF);
+        root2Scene.setTop(userTFSecondScene);
     }
+
 
     public BorderPane getRoot2Scene() {
         return root2Scene;
@@ -113,23 +221,6 @@ private TextField userTF;
         this.turneringButton = turneringButton;
     }
 
-    public Label getAlternativ() {
-        return alternativ;
-    }
-
-    public void setAlternativ(Label alternativ) {
-        this.alternativ = alternativ;
-    }
-    /*homeButton.setOnAction(new EventHandler<ActionEvent>() {
-    @Override
-    public void handle(ActionEvent event) {
-        BorderPane pane = new BorderPane();
-        Label label1 = new Label("Test");
-        pane.setCenter(label1);
-        scene.setRoot(pane);
-    }
-});*/
-
     public Button getMatchTvTButton() {
         return matchTvTButton;
     }
@@ -146,7 +237,27 @@ private TextField userTF;
         this.backButton = backButton;
     }
 
+    public BorderPane getStartRoot() {
+        return startRoot;
+    }
+
+    public Button getLogInButton() {
+        return logInButton;
+    }
+
     public TextField getUserTF() {
         return userTF;
+    }
+
+    public void setUserTF(TextField userTF) {
+        this.userTF = userTF;
+    }
+
+    public TextField getUserTFSecondScene() {
+        return userTFSecondScene;
+    }
+
+    public void setUserTFSecondScene(TextField userTFSecondScene) {
+        this.userTFSecondScene = userTFSecondScene;
     }
 }
