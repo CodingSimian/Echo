@@ -5,7 +5,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,11 +14,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+
+import java.util.List;
 
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
@@ -35,13 +35,22 @@ public class PvPView {
 
     private BorderPane rootPvPScene;
     private Stage popupWindow;
-    private Button addButton,removeButton,changeButton,goBackButton,mainMenuButton;
+    private Button addButton,removeButton,changeButton,mainMenuButton;
 
     private TextField match_IdTF, player_Id1TF, player_id2TF, game_IdTF, winner_IdTF, dateTF, score_P1TF, score_P2TF,userTF;
     private Label instructionsForPvP;
     private HBox buttonBox;
 
     private ChoiceBox viewOptions;
+    private ChoiceBox<Player> winnerChoice, playerChoice1,playerchoice2;
+    private ChoiceBox<Game> gameChoice;
+
+    private GameController myGameController;
+    private PlayerController myPlayerController;
+
+    private ObservableList<Player> playerList;
+
+    private ObservableList<Game> gameList;
 
     public PvPView(){
         BuildUI();
@@ -49,10 +58,6 @@ public class PvPView {
 public void BuildUI(){
         viewController = new PvPController(); //PvPControllerns Konstruktor fyller PvPControllerns observable lista med hjälp av en typedquery
         rootPvPScene = new BorderPane();
-
-    String viewOptionsList[] = {"Normal-Vy","Smeknamns-Vy"};
-
-    viewOptions = new ChoiceBox(FXCollections.observableArrayList(viewOptionsList));
 
     buttonBox = new HBox();
     addButton = new Button("Lägg till");
@@ -64,15 +69,12 @@ public void BuildUI(){
     changeButton = new Button("Ändra");
     changeButton.setOnAction(this::changeButtonPressed);
 
-    goBackButton = new Button("Tillbaka");
-    goBackButton.setOnAction(this::backButtonPressed);
-
     mainMenuButton = new Button("HuvudMeny");
 
     buttonBox.setSpacing(30);
     buttonBox.setAlignment(Pos.CENTER);
 
-    buttonBox.getChildren().addAll(addButton,removeButton,changeButton,goBackButton,mainMenuButton,viewOptions);
+    buttonBox.getChildren().addAll(addButton,removeButton,changeButton,mainMenuButton);
 
     userTF = new TextField();
     userTF.setMinWidth(200);
@@ -83,17 +85,17 @@ public void BuildUI(){
     TableColumn<PvP, Integer> match_IdColumn = new TableColumn<>("ID of match");
     match_IdColumn.setCellValueFactory(new PropertyValueFactory<>("match_Id")); //lägger in data i cell-tabellen
 
-    TableColumn<PvP, Integer> player_Id2Column = new TableColumn<>("ID of second player");
+    TableColumn<PvP, Integer> player_Id2Column = new TableColumn<>("ID player 2");
     player_Id2Column.setCellValueFactory(new PropertyValueFactory<>("player_Id2"));
 
-    TableColumn<PvP, Integer> player_Id1Column = new TableColumn<>("ID of first player");
+    TableColumn<PvP, Integer> player_Id1Column = new TableColumn<>("ID-player 1");
     player_Id1Column.setCellValueFactory(new PropertyValueFactory<>("player_Id1"));
 
     TableColumn<PvP, Integer> game_IdColumn = new TableColumn<>("ID of game being played");
     game_IdColumn.setCellValueFactory(new PropertyValueFactory<>("game_Id"));
 
-    TableColumn<PvP, Integer> winner_IdColumn = new TableColumn<>("ID of the player that won");
-    winner_IdColumn.setCellValueFactory(new PropertyValueFactory<>("winner_Id"));
+    TableColumn<PvP, String> winner_IdColumn = new TableColumn<>("Winning player");
+    winner_IdColumn.setCellValueFactory(new PropertyValueFactory<>("winner_Name"));
 
     TableColumn<PvP,Integer> score_P2Column = new TableColumn<>("Score of the second player");
     score_P2Column.setCellValueFactory(new PropertyValueFactory<PvP,Integer>("score_P2"));
@@ -111,23 +113,6 @@ public void BuildUI(){
     mainTable.setFocusTraversable(false); //Venne vad detta gör men Niclas skrev detta i sin klass så antar(?) det är bra
     mainTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); //Venne vad denna gör heller lmao
 
-    viewOptions.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-        @Override//Numbers här är indexes
-        public void changed(ObservableValue<? extends Number> observableValue, Number value, Number new_value) {
-            String myChoice = viewOptionsList[new_value.intValue()];
-
-            if(myChoice.equals("Smeknamns-Vy")){
-                //Kod här inne ska alltså ändra på tabellen, så att de kolumner som visar player-id istället visar
-                //De nicknames som är länkade till de player-ids.
-
-
-            } else if (myChoice.equals("Normal-Vy")) {
-                //Koden här inne ska bara visa det vanliga med player-ids
-
-            }
-        }
-    });
-
 
     rootPvPScene.setBottom(buttonBox);
     rootPvPScene.setCenter(mainTable);
@@ -140,6 +125,46 @@ public void addButtonPressed(ActionEvent actionEvent){
     popupWindow.setTitle("Tilläggsformulär");
     popupWindow.setMinHeight(400);
     popupWindow.setMinWidth(200);
+
+    //Skapa två observableListor, en för alla player objekt och game objekt
+    playerList = FXCollections.observableArrayList();
+    gameList = FXCollections.observableArrayList();
+    EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+    String strQuery = "SELECT c FROM Player c WHERE c.player_Id IS NOT NULL"; //Här är c en placeholder
+    TypedQuery<Player> tq = em.createQuery(strQuery, Player.class);
+
+    String strQueryGames ="SELECT c FROM Game c WHERE c.gameId IS NOT NULL";
+    TypedQuery<Game> tq2 = em.createQuery(strQueryGames, Game.class);
+
+    try{
+        List<Player> somePlayers = tq.getResultList();
+        playerList.addAll(somePlayers);
+
+        List<Game> someGames = tq2.getResultList();
+        gameList.addAll(someGames);
+
+
+    }
+    catch (NoResultException ex){
+        ex.printStackTrace();
+    }
+    finally{
+        em.close();
+    }
+
+    playerChoice1 = new ChoiceBox<>();
+    playerChoice1.getItems().addAll(playerList);
+
+    playerchoice2 = new ChoiceBox<>();
+    playerchoice2.getItems().addAll(playerList);
+
+    gameChoice = new ChoiceBox<>();
+    gameChoice.getItems().addAll(gameList);
+
+    //playerChoice1.setItems(myPlayerController.getPlayerList);
+    //playerChoice2.setItems(myPlayerController.getPlayerList);
+    //gameChoice.setItems(myGameController.getGameList);
+
 
     player_Id1TF = new TextField();
     player_Id1TF.setPromptText("First player ID");
@@ -157,21 +182,12 @@ public void addButtonPressed(ActionEvent actionEvent){
     submitButton.setOnAction(this::register2);
 
     VBox layout = new VBox(10);
-    layout.getChildren().addAll(submitButton,player_Id1TF,player_id2TF,game_IdTF,dateTF);
+    layout.getChildren().addAll(submitButton,playerChoice1,playerchoice2,gameChoice,dateTF);
     layout.setAlignment(Pos.CENTER);
 
     Scene scene = new Scene(layout);
     popupWindow.setScene(scene);
     popupWindow.show();
-
-
-    /*Label popupLabel = new Label();
-    popupLabel.setText("Är du säker?");
-    Button nejButton = new Button("NEJ");
-    nejButton.setOnAction(e -> popupWindow.close()); //Stänger ned popup-rutan
-
-    Button jaButton = new Button("JA");
-    jaButton.setOnAction(e -> { popupWindow.close();});*/
 }
 
     public void removeButtonPressed(ActionEvent actionEvent){
@@ -199,38 +215,25 @@ public void addButtonPressed(ActionEvent actionEvent){
 
     }
 
-    public void backButtonPressed(ActionEvent actionEvent){
-        System.out.println("Hullo");
-    }
-
-    /*public void mainMenuButtonPressed(ActionEvent actionEvent){
-        System.out.println("Hullo");
-    }*/
-
     public void changeButtonPressed(ActionEvent actionEvent){
         //Denna metod ska alltså ändra vinnar-id, och poängen för spelare 1 och 2.
         PvP PvPMatchSelected = mainTable.getSelectionModel().getSelectedItem();
+
+        Player player2 = PvPMatchSelected.getPlayer_Id2();
+        Player player1 = PvPMatchSelected.getPlayer_Id1();
+
+        winnerChoice = new ChoiceBox<>();
+        winnerChoice.getItems().addAll(player2,player1);
+
+
         popupWindow = new Stage();
         popupWindow.initModality(Modality.APPLICATION_MODAL);
         popupWindow.setTitle("Ändringsformulär");
         popupWindow.setMinHeight(400);
         popupWindow.setMinWidth(200);
 
-        player_Id1TF = new TextField(String.valueOf(PvPMatchSelected.getPlayer_Id1()));
-        player_Id1TF.setPromptText("First player ID");
-
-        player_id2TF = new TextField(String.valueOf(PvPMatchSelected.getPlayer_Id2()));
-        player_id2TF.setPromptText("Second player ID");
-
-        game_IdTF = new TextField(String.valueOf(PvPMatchSelected.getGame_Id()));
-        game_IdTF.setPromptText("ID of the game being played");
-
-
-        winner_IdTF = new TextField(String.valueOf(PvPMatchSelected.getWinner_Id()));
+        winner_IdTF = new TextField(String.valueOf(PvPMatchSelected.getWinner_Name()));
         winner_IdTF.setPromptText("ID of the winner");
-
-        dateTF = new TextField(PvPMatchSelected.getDate());
-        dateTF.setPromptText("Date of the match being played, yyyy-mm-dd");
 
         score_P1TF = new TextField(String.valueOf(PvPMatchSelected.getScore_P1()));
         score_P1TF.setPromptText("Score of the first player");
@@ -239,19 +242,10 @@ public void addButtonPressed(ActionEvent actionEvent){
         score_P2TF.setPromptText("Score of the second player");
 
         Button submitButton = new Button("Submit");
-        submitButton.setOnAction(this::register3);
-
-
-        /*Label popupLabel = new Label();
-        popupLabel.setText("Är du säker?");
-        Button nejButton = new Button("NEJ");
-        nejButton.setOnAction(e -> popupWindow.close()); //Stänger ned popup-rutan
-
-        Button jaButton = new Button("JA");
-        jaButton.setOnAction(e -> { popupWindow.close();});*/
+        submitButton.setOnAction(this::changeScoreInfo);
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(submitButton,player_Id1TF,player_id2TF,game_IdTF,dateTF,winner_IdTF,score_P1TF,score_P2TF);
+        layout.getChildren().addAll(submitButton,winnerChoice,score_P1TF,score_P2TF);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
@@ -275,6 +269,7 @@ public void addButtonPressed(ActionEvent actionEvent){
     public void setViewController(PvPController viewController) {
         this.viewController = viewController;
     }
+
     public void register(ActionEvent e){
         PvP PvPMatchSelected = mainTable.getSelectionModel().getSelectedItem();
         playerController = new PlayerController();
@@ -299,14 +294,10 @@ public void addButtonPressed(ActionEvent actionEvent){
 
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
 
-        PvP PvPMatchSelected = mainTable.getSelectionModel().getSelectedItem();
 
-        Player playerForPVPMatch = returnPlayer2(Integer.parseInt(player_Id1TF.getText()),em);
-
-        Player playerForPVPMatch2 = returnPlayer2(Integer.parseInt(player_id2TF.getText()),em);
-
-
-        Game gameForPVP = returnGame2(Integer.parseInt(game_IdTF.getText()),em);
+        Player playerForPVPMatch = playerChoice1.getValue();
+        Player playerForPVPMatch2 = playerchoice2.getValue();
+        Game gameForPVP = gameChoice.getValue();
 
 
         viewController.addPvPMatch(playerForPVPMatch,playerForPVPMatch2,gameForPVP,dateTF.getText());
@@ -318,22 +309,14 @@ public void addButtonPressed(ActionEvent actionEvent){
 
 //OBS register3 är precis som register2 fast här är det som var (int) player_Id1 propertyn för PvP klassen
     //istället det nuvarande (Player) player_1, metoden returnPlayer
-    public void register3(ActionEvent e){
+    public void changeScoreInfo(ActionEvent e){
         PvP PvPMatchSelected = mainTable.getSelectionModel().getSelectedItem();
 
-        playerController = new PlayerController();
-        Player playerForPVPMatch = playerController.returnPlayer(Integer.parseInt(player_Id1TF.getText()));
-        Player playerForPVPMatch2 = playerController.returnPlayer(Integer.parseInt(player_id2TF.getText()));
+        PvPMatchSelected.updateMatch(winnerChoice.getValue().getNickName(),
+                Integer.parseInt(score_P1TF.getText()),Integer.parseInt(score_P2TF.getText()));
 
-        gameController = new GameController();
-        Game gameForPVP = gameController.getGame(Integer.parseInt(game_IdTF.getText()));
-
-        PvPMatchSelected.updateMatch(playerForPVPMatch,
-                playerForPVPMatch2,gameForPVP,Integer.parseInt(winner_IdTF.getText()),
-                dateTF.getText(),Integer.parseInt(score_P1TF.getText()),Integer.parseInt(score_P2TF.getText()));
 
         viewController.updateInfoPvPMatch(PvPMatchSelected);
-
         popupWindow.close();
     }
 

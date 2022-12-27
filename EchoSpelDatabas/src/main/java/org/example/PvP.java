@@ -32,7 +32,7 @@ public class PvP implements Serializable {
     private Game game_Id;
 
     @Column(name = "winner_Id")
-    private int winner_Id;
+    private String winner_Name;
 
     @Column(name = "date")
     private String date;
@@ -77,12 +77,12 @@ public class PvP implements Serializable {
         this.game_Id = game_Id;
     }
 
-    public int getWinner_Id() {
-        return winner_Id;
+    public String getWinner_Name() {
+        return winner_Name;
     }
 
-    public void setWinner_Id(int winner_Id) {
-        this.winner_Id = winner_Id;
+    public void setWinner_Name(String winner_Name) {
+        this.winner_Name = winner_Name;
     }
 
     public String getDate() {
@@ -109,12 +109,8 @@ public class PvP implements Serializable {
         this.score_P2 = score_p2;
     }
 
-    public void updateMatch( Player player_id1, Player player_id2, Game game_Id, int winner_Id, String date, int score_p1, int score_P2) {
-        this.player_1 = player_id1;
-        this.player_2 = player_id2;
-        this.game_Id = game_Id;
-        this.winner_Id = winner_Id;
-        this.date = date;
+    public void updateMatch( String daWinner_name,int score_p1, int score_P2) {
+        this.winner_Name = daWinner_name;
         this.score_p1 = score_p1;
         this.score_P2 = score_P2;
     }

@@ -134,7 +134,7 @@ private ObservableList<PvP> PvPList;
         try{
             somePvPMatch = tq.getSingleResult();
             System.out.println(somePvPMatch.getPlayer_Id1() + " möter " + somePvPMatch.getPlayer_Id2() + " där match_id är " + somePvPMatch.getMatch_Id()
-            + " där vinnaren är\n" + somePvPMatch.getWinner_Id() + " med en poäng av " + somePvPMatch.getScore_P2());
+            + " där vinnaren är\n" + somePvPMatch.getWinner_Name() + " med en poäng av " + somePvPMatch.getScore_P2());
         }
         catch(NoResultException ex){
             System.out.println("ex");
@@ -230,7 +230,7 @@ private ObservableList<PvP> PvPList;
     }
 
 
-    public static void changeMatch(int daWinner_ID, int SCORE_P1, int SCORE_P2, int daMatch_Id){
+    public static void changeMatch(String daWinner_ID, int SCORE_P1, int SCORE_P2, int daMatch_Id){
         //Denna metod är till för att ändra på match-poängen. Eftersom man skapar matchen först, sedan efter
         //den är färdiggjord så lägger man till resultatet.
 
@@ -241,7 +241,7 @@ private ObservableList<PvP> PvPList;
             et = em.getTransaction();
             et.begin();
             somePVPMatch = em.find(PvP.class, daMatch_Id);
-            somePVPMatch.setWinner_Id(daWinner_ID);
+            somePVPMatch.setWinner_Name(daWinner_ID);
             somePVPMatch.setScore_p1(SCORE_P1);
             somePVPMatch.setScore_P2(SCORE_P2);
 
@@ -260,11 +260,7 @@ private ObservableList<PvP> PvPList;
     }
 
 
-    //Så ett av kraven för gurppuppgiften är att ändra på hur en match avslutas, dock är det logiskt att personal skulle kunna ändra på mer än bara poängen samt vem som är vinnaren
-    //pga detta så skapas en metoden changeEverythingMatch(), som tar in alla parametrar för en match, och ändrar allt. Om det är så att en användare inte vill ändra allt
-    //behövs bara de gamla värdena skickas in som inparametrar till denna metod.
-
-    public void changeEverythingMatch(PvP matchToBeRemoved,int daMatch_Id,Player daPlayer_Id1,Player daPlayer_Id2, Game daGame_Id, String daDate,int daWinner_ID, int SCORE_P1, int SCORE_P2){
+    public void changeEverythingMatch(PvP matchToBeRemoved,int daMatch_Id,Player daPlayer_Id1,Player daPlayer_Id2, Game daGame_Id, String daDate,String daWinner_ID, int SCORE_P1, int SCORE_P2){
         //Denna metod är till för att ändra på match-poängen. Eftersom man skapar matchen först, sedan efter
         //den är färdiggjord så lägger man till resultatet.
 
@@ -276,7 +272,7 @@ private ObservableList<PvP> PvPList;
             et = em.getTransaction();
             et.begin();
             somePVPMatch = em.find(PvP.class, daMatch_Id);
-            somePVPMatch.setWinner_Id(daWinner_ID);
+            somePVPMatch.setWinner_Name(daWinner_ID);
             somePVPMatch.setScore_p1(SCORE_P1);
             somePVPMatch.setScore_P2(SCORE_P2);
 
@@ -313,7 +309,7 @@ private ObservableList<PvP> PvPList;
 
             someMatch = em.find(PvP.class,matchSelected.getMatch_Id());
 
-            someMatch.updateMatch(matchSelected.getPlayer_Id1(),matchSelected.getPlayer_Id2(),matchSelected.getGame_Id(),matchSelected.getWinner_Id(),matchSelected.getDate(),matchSelected.getScore_P1(),matchSelected.getScore_P2());
+            someMatch.updateMatch(matchSelected.getWinner_Name(),matchSelected.getScore_P1(),matchSelected.getScore_P2());
 
             em.merge(someMatch);
             et.commit();
