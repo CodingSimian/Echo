@@ -3,7 +3,6 @@ package org.example;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,15 +13,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-
-import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
 public class TeamView {
 
@@ -34,9 +26,10 @@ public class TeamView {
 
     private TableColumn<Team, Integer> idColum;
     private TableColumn<Team, String> nameColum;
-    private TableColumn<Team, String> gameIdColum;
+    private TableColumn<Team, Game> gameIdColum;
 
-    private TextField teamName, gameId;
+    private TextField teamName;
+
 
     private Button add, delete, edit, homebutton, addTeamMate, deleteTeamMate;
 
@@ -47,26 +40,30 @@ public class TeamView {
     private ChoiceBox<Game> gamesDropDown;
 
     ObservableList<Player> teamMembers = FXCollections.observableArrayList();
-    ObservableList<Player> otherPlayers = FXCollections.observableArrayList();
+    ObservableList<Player> allPlayers = FXCollections.observableArrayList();
+    ObservableList<Player>  others = FXCollections.observableArrayList();
     ObservableList<Game> games = FXCollections.observableArrayList();
 
+    List<Player> alterdPlayers = new ArrayList<>();
 
-    public TeamView(Button button){
-        buildUI(button);
+
+    public TeamView(){
+        buildUI();
     }
 
-    private void buildUI(Button button){
+    private void buildUI(){
         controller = new TeamController();
         mainPane = new BorderPane();
         mainPane.setPrefSize(800,700);
 
         games.addAll(controller.getAllGames());
-        uppdateGameColum();
+        allPlayers.addAll(controller.getAllPlayers());
+
 
 
         //Buttons
 
-        homebutton = button;
+        homebutton = new Button("Home");
         homebutton.setPrefSize(75,50);
 
         add = new Button("Add");
@@ -102,8 +99,8 @@ public class TeamView {
         nameColum = new TableColumn<Team,String>("Team Name");
         nameColum.setCellValueFactory(new PropertyValueFactory<Team,String>("name"));
 
-        gameIdColum = new TableColumn<Team,String>("Game");
-        gameIdColum.setCellValueFactory(new PropertyValueFactory<Team, String>("gameName"));
+        gameIdColum = new TableColumn<Team,Game>("Game");
+        gameIdColum.setCellValueFactory(new PropertyValueFactory<Team, Game>("game"));
 
 
 
@@ -162,18 +159,21 @@ public class TeamView {
     }
 
     private void upDate(ActionEvent event) {
-        table.getSelectionModel().getSelectedItem().setGameId(gamesDropDown.getValue().getGameId());
+        table.getSelectionModel().getSelectedItem().setGame(gamesDropDown.getValue());
         table.getSelectionModel().getSelectedItem().setName(teamName.getText());
         controller.updateTeam(table.getSelectionModel().getSelectedItem());
-        uppdateGameColum();
+        controller.updatePlayers(alterdPlayers);
+        //uppdateGameColum();
 
         popUpWindow.close();
 
     }
     private void register(ActionEvent event){
-        controller.addTeam(gamesDropDown.getValue().getGameId(), teamName.getText());
+
+
+        controller.addTeam(teamName.getText(),gamesDropDown.getSelectionModel().getSelectedItem());
         popUpWindow.close();
-        uppdateGameColum();
+        //uppdateGameColum();
     }
 
     private void deleteButtonPressed(ActionEvent event) {
@@ -220,7 +220,7 @@ public class TeamView {
     public void remove(ActionEvent event){
         controller.removeTeam(table.getSelectionModel().getSelectedItem());
         popUpWindow.close();
-        uppdateGameColum();
+       //uppdateGameColum();
     }
     private void editButtonPressed(ActionEvent event) {
         if(table.getSelectionModel().getSelectedItem() != null) {
@@ -232,7 +232,7 @@ public class TeamView {
 
             teamName = new TextField(table.getSelectionModel().getSelectedItem().getName());
             teamName.setPromptText("Team Name");
-            gameId = new TextField();
+
 
             HBox buttonBox = new HBox();
             buttonBox.setSpacing(50);
@@ -259,29 +259,59 @@ public class TeamView {
 
             // ChoiceBoxes
 
+            alterdPlayers.clear();
 
-            otherPlayers.clear();
-            otherPlayers.addAll(controller.getOtherPlayers(table.getSelectionModel().getSelectedItem().getTeamId()));
-            othersDropDown = new ChoiceBox<>(otherPlayers);
+            others.clear();
+            others.addAll(allPlayers);
+            othersDropDown = new ChoiceBox<>(others);
             othersDropDown.setPrefWidth(75);
+            List<Player> toRemove = table.getSelectionModel().getSelectedItem().getTeamMembers();
+            Player player1 = new Player();
+            Player player2 = new Player();
+            for (Player player : toRemove) {
+                player1 = player;
+                for (int j = 0; j<others.size(); j++ ) {
+                    if (others.get(j).getPlayer_Id() == player1.getPlayer_Id()) {
+                        others.remove(j);
+                    }
+                }
+
+            }
+
+
+
 
             teamMembers.clear();
-            teamMembers.addAll(controller.getTeamMembers(table.getSelectionModel().getSelectedItem().getTeamId()));
+            teamMembers.addAll(table.getSelectionModel().getSelectedItem().getTeamMembers());
             membersDropDown = new ChoiceBox<>(teamMembers);
             membersDropDown.setPrefWidth(75);
 
+            others.removeAll(teamMembers);
 
-            games.addAll(controller.getAllGames());
+
+
+
+
+
+
+           // games.addAll(controller.getAllGames());
             gamesDropDown = new ChoiceBox<>(games);
 
             // Sets correct starting value for gamesDropDown
-            for (int a = 0; a < games.size(); a++) {
-                if (games.get(a).getGameId() == table.getSelectionModel().getSelectedItem().getGameId()) {
-                    gamesDropDown.setValue(games.get(a));
-                    break;
-
+            Game game1;
+            int value = 0;
+            for(int i = 0; i<games.size(); i++){
+                if(table.getSelectionModel().getSelectedItem().getGame() == games.get(i)){
+                    value = i;
                 }
+
             }
+
+            gamesDropDown.setValue(games.get(value));
+
+
+
+
             gamesDropDown.setPrefWidth(75);
 
 
@@ -308,31 +338,20 @@ public class TeamView {
     }
 
     public void addTeamMateButtonPressed(ActionEvent event){
+
+            //controller.updatePlayer(othersDropDown.getValue());
             othersDropDown.getValue().setTeam_Id(table.getSelectionModel().getSelectedItem().getTeamId());
-            controller.updatePlayer(othersDropDown.getValue());
+            alterdPlayers.add(othersDropDown.getValue());
             teamMembers.add(othersDropDown.getValue());
-            otherPlayers.remove(othersDropDown.getValue());
+            others.remove(othersDropDown.getValue());
 
-
-
-
-
-          //teamMembers.add(othersDropDown.getValue());
-          //otherPlayers.remove(othersDropDown.getValue());
-
-        //System.out.println(player.getTeam_Id());
-        //player.setTeam_Id(table.getSelectionModel().getSelectedItem().getTeamId());
-        //System.out.println(player.getTeam_Id());
-        //controller.updatePlayer(player);
-        //teamMembers.add(player);
-        //otherPlayers.remove(player);
 
     }
 
     public void deleteTeamMateButtonPressed(ActionEvent event){
         membersDropDown.getValue().setTeam_IdNull();
-        controller.updatePlayer(membersDropDown.getValue());
-        otherPlayers.add(membersDropDown.getValue());
+        alterdPlayers.add(membersDropDown.getValue());
+        others.add(membersDropDown.getValue());
         teamMembers.remove(membersDropDown.getValue());
 
     }
@@ -342,28 +361,12 @@ public class TeamView {
         return mainPane;
     }
 
-    public void setHomebutton(Button button){
-       homebutton = button;
 
-    }
 
-    public void uppdateGameColum(){
-        List<Team>  temp = FXCollections.observableArrayList();
-        temp.addAll(controller.getTeamObservableList());
-        Team tempteam;
-        for(int o = 0; o<temp.size(); o++){
-            tempteam = temp.get(o);
 
-            int id = tempteam.getGameId();
-            for(int l = 0; l<games.size(); l++){
-                if(games.get(l).getGameId() == id){
-                    tempteam.setGameName(games.get(l).getGameName());
-                }
 
-            }
-
-        }
-
+    public Button getHomebutton(){
+        return  homebutton;
     }
 
 

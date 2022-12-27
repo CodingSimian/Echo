@@ -1,13 +1,9 @@
 package org.example;
 
-import javafx.beans.Observable;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.hibernate.query.NativeQuery;
-import org.example.Personal;
 import javax.persistence.*;
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +41,6 @@ public class PersonalController {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         Personal pers = new Personal(fName,lName,nickName,adress,postalnNumber,postalCity,country,email); // TODO så att tillagda personal hämtar sitt id från databsen;
-
-
 
         try{
             et = em.getTransaction();
@@ -90,9 +84,13 @@ public class PersonalController {
         }
         em.close();
 
-
-
     }
+
+
+
+
+
+
 
     public  void removePersonal(Personal person){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
@@ -134,12 +132,6 @@ public class PersonalController {
         }
 
     }
-
-    public void getTeamMembers(int id){
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        //TODO när Spelare klassen är kopplad gör klart metod för att hämta alla spelare med motsvarande teamId
-    }
-
     public Personal getPersonal(int id){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
@@ -164,7 +156,7 @@ public class PersonalController {
 
     }
 
-    public List<Personal> getAllPersonal(){
+    public List<Personal> getAllPersonal1(){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         String strQuery = "SELECT e FROM Personal e WHERE e.id IS NOT NULL";
         TypedQuery<Personal> ps = em.createQuery(strQuery, Personal.class);
@@ -186,7 +178,7 @@ public class PersonalController {
 
 
     }
-    public ObservableList<Personal> getPersonal1(){
+    public ObservableList<Personal> getPersonal(){
         return personal;
     }
 }

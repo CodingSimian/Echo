@@ -4,10 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import javax.persistence.*;
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
@@ -21,17 +20,18 @@ public class TeamController {
 
     }
 
-    public  void addTeam(int id, String name){
+    public  void addTeam(String name, Game game){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
+        Team team = new Team();
+        team.setGame(game);
+        team.setName(name);
 
         try{
             et = em.getTransaction();
             et.begin();
-            Team team = new Team();
-            team.setName(name);
-            team.setGameId(id);
-            em.persist(team);
+            em.merge(team);
+
             et.commit();
 
         }catch(Exception ex){
@@ -70,6 +70,7 @@ public class TeamController {
             em.close();
         }
         em.close();
+        uppdateTeamObservabelList();
 
     }
 
@@ -77,11 +78,11 @@ public class TeamController {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         Team teamToRemove;
-        List<Player> members = getTeamMembers(team.getTeamId());
+        List<Player> members = team.getTeamMembers();
         System.out.println(members.size());
         for(int i = 0; i< members.size(); i++){
             members.get(i).setTeam_IdNull();
-            updatePlayer(members.get(i));
+            updatePlayers(members);
         }
 
 
@@ -89,6 +90,7 @@ public class TeamController {
             et = em.getTransaction();
             et.begin();
             teamToRemove = em.find(Team.class,team.getTeamId());
+            teamToRemove.setGame(null);
             em.remove(teamToRemove);
             et.commit();
 
@@ -214,6 +216,7 @@ public class TeamController {
 
 
         try{
+
             temp = tQ.getResultList();
 
 
@@ -229,6 +232,31 @@ public class TeamController {
 
     }
 
+    public List<Player>getAllPlayers(){
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        String strQuery = "SELECT e FROM Player e ";
+
+        TypedQuery<Player> tQ = em.createQuery(strQuery, Player.class);
+        List<Player> temp = new ArrayList<>();
+
+
+
+        try{
+
+            temp = tQ.getResultList();
+
+
+        }catch(NoResultException ex){
+            ex.printStackTrace();
+        }
+        finally {
+
+        }
+
+        return temp;
+
+    }
+
     public void updatePlayer(Player player){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
@@ -238,6 +266,35 @@ public class TeamController {
             et = em.getTransaction();
             et.begin();
             em.merge(player);
+            et.commit();
+
+
+        }catch(Exception ex){
+            if(et != null){
+                et.rollback();
+            }
+            ex.printStackTrace();
+        }
+        finally {
+            em.close();
+        }
+        em.close();
+
+    }
+
+    public void updatePlayers(List<Player> players){
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction et = null;
+        ListIterator<Player> Iterator = players.listIterator();
+        System.out.println(players.size());
+
+
+        try{
+            et = em.getTransaction();
+            et.begin();
+            while(Iterator.hasNext()) {
+                em.merge(Iterator.next());
+            }
             et.commit();
 
 

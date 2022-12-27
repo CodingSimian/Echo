@@ -1,14 +1,10 @@
 package org.example;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import static javax.persistence.CascadeType.ALL;
 
 @Entity
@@ -17,19 +13,39 @@ public class Team implements Serializable {
 
     // Properties
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "team_id")
     private int teamId;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "game_id" )
-    private int gameId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = ALL)
+    @JoinColumn(name = "game_Id")
+    private Game game;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "team_Id")
+    private List<Player> teamMembers = new ArrayList<>();
 
-    @Transient
-    private String gameName;
+    public List<Player> getTeamMembers(){
+        return teamMembers;
+    }
+    public void removeTeamMember(Player player){
+        teamMembers.remove(player);
+        player.setTeam_IdNull();
+    }
+    public void addTeamMember(Player player){
+        teamMembers.add(player);
+    }
 
+    public Game getGame(){
+        return game;
+    }
+
+    public void setGame(Game game){
+        this.game = game;
+    }
 
 
 
@@ -44,10 +60,6 @@ public class Team implements Serializable {
         return teamId;
     }
 
-
-
-
-
     public String getName() {
         return name;
     }
@@ -56,21 +68,6 @@ public class Team implements Serializable {
         this.name = name;
     }
 
-
-    public int getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
-    }
-
-    public void setGameName(String game){
-        this.gameName = game;
-    }
-    public String getGameName(){
-        return this.gameName;
-    }
 
     @Override
     public String toString(){

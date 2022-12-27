@@ -1,20 +1,20 @@
 package org.example;
 
-import javafx.beans.Observable;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Border;
+
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.hibernate.tool.schema.Action;
-import org.w3c.dom.Text;
+
+
 
 
 // Niclas Larsson
@@ -46,8 +46,8 @@ public class PersonalView extends VBox {
     private Stage popupWindow;
 
 
-    public PersonalView(Button button){
-        buildUI(button);
+    public PersonalView(){
+        buildUI();
     }
 
 
@@ -60,14 +60,14 @@ public class PersonalView extends VBox {
        objekt som finns i listan det medgör att taballen uppdateras automatiskts när något objekt läggs till eller tas bort från ObservabelList.
 
      */
-    private void buildUI(Button button){
+    private void buildUI(){
         controller = new PersonalController();
         table = new TableView<Personal>();
         pane = new BorderPane();
         add = new Button("Add");
         delete = new Button("Delete");
         edit = new Button("Edit");
-        homeButton = button;
+        homeButton = new Button("Home");
         pane.setPrefSize(800,700);
         table.setPrefSize(200,300);
 
@@ -77,6 +77,7 @@ public class PersonalView extends VBox {
         delete.setOnAction(this::removeButtonPressed);
         edit.setPrefSize(50,50);
         edit.setOnAction(this::editButtonPressed);
+        homeButton.setPrefSize(50,50);
         top = new HBox();
         top.setSpacing(15);
         top.getChildren().addAll(homeButton,add,delete,edit);
@@ -117,7 +118,7 @@ public class PersonalView extends VBox {
         // Lägger ihop alla columer till en tabell samt kopplar tabellen till observabelList så den vet vart den ska leta efter objekt.
         table.getColumns().addAll(firstNameColum,lastNameColum,nickNameColum,adressNameColum,postalNumberColum,postalCityColum,countryColum,emailColum);
         //table.getItems().addAll(controller.getAllPersonal());
-        table.setItems(controller.getPersonal1()); // Viktig rad.
+        table.setItems(controller.getPersonal()); // Viktig rad.
         table.setFocusTraversable(false);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -127,8 +128,8 @@ public class PersonalView extends VBox {
         pane.setCenter(table);
         //getChildren().add(table);
     }
-    public void setHomeButton(Button button){
-        homeButton = button;
+    public Button getHomeButton(){
+        return homeButton;
 
     }
 
