@@ -29,7 +29,7 @@ public class TeamMatch implements Serializable {
         private Game gameId;
 
         @Column(name = "winner_Id" )
-        private int winnerId;
+        private String winnerName;
 
         @Column(name = "date" )
         private String date;
@@ -72,12 +72,12 @@ public class TeamMatch implements Serializable {
         this.gameId = gameId;
     }
 
-    public int getWinnerId() {
-        return winnerId;
+    public String getWinnerName() {
+        return winnerName;
     }
 
-    public void setWinnerId(int winnerId) {
-        this.winnerId = winnerId;
+    public void setWinnerName(String winnerName) {
+        this.winnerName = winnerName;
     }
 
     public String getDate() {
@@ -104,13 +104,8 @@ public class TeamMatch implements Serializable {
         this.scoreT2 = scoreT2;
     }
 
-    public void changeTeamMatch (int matchId,Team teamId1, Team teamId2, Game gameId, int winnerId, String date, int scoreT1, int scoreT2){
-        this.matchId = matchId;
-        this.teamId1 = teamId1;
-        this.teamId2 = teamId2;
-        this.gameId = gameId;
-        this.winnerId = winnerId;
-        this.date = date;
+    public void changeTeamMatch (String winnerName, int scoreT1, int scoreT2){
+        this.winnerName = winnerName;
         this.scoreT1 = scoreT1;
         this.scoreT2 = scoreT2;
 

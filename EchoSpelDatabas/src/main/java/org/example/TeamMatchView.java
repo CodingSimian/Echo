@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
@@ -180,7 +179,7 @@ public class TeamMatchView extends VBox {
         teamId1 = new TextField(String.valueOf(selectedTeamMatch.getTeamId1()));
         teamId2 = new TextField(String.valueOf(selectedTeamMatch.getTeamId2()));
         gameId = new TextField(String.valueOf(selectedTeamMatch.getGameId()));
-        winnerId = new TextField(String.valueOf(selectedTeamMatch.getWinnerId()));
+        winnerId = new TextField(String.valueOf(selectedTeamMatch.getWinnerName()));
         date = new TextField(selectedTeamMatch.getDate());
         scoreT1 = new TextField(String.valueOf(selectedTeamMatch.getScoreT1()));
         scoreT2 = new TextField(String.valueOf(selectedTeamMatch.getScoreT2()));
@@ -210,7 +209,7 @@ public class TeamMatchView extends VBox {
         scoreT2.setPromptText("Team 2 Score");
 
         Button submit = new Button("Submit");
-        submit.setOnAction(this::changeTeamMatch2);
+        submit.setOnAction(this::changeTeamMatch);
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(submit,matchIdLabel,matchId,teamId1Label,teamId1,teamId2Label,teamId2,gameIdLabel,gameId,winnerIdLabel,winnerChoice,dateLabel,date,scoreT1Label,scoreT1,scoreT2Label,scoreT2);
@@ -301,16 +300,21 @@ public class TeamMatchView extends VBox {
     }
 
 
-    public void changeTeamMatch2 (ActionEvent actionEvent) {
+    public void changeTeamMatch(ActionEvent actionEvent) {
         TeamMatch teamMatch = table.getSelectionModel().getSelectedItem();
       //  teamMatch.changeTeamMatch(Integer.parseInt(matchId.getText()),teamId1.getText()),Integer.parseInt(teamId2.getText()),Integer.parseInt(gameId.getText()),Integer.parseInt(winnerId.getText()),date.getText(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
-        teamMatchViewController.changeMatch2(teamMatch);
+        teamMatchViewController.resolveMatch(teamMatch);
         popupWindow.close();
+    }
+
+    public void updateScore (ActionEvent actionEvent){
+        TeamMatch selectedMatch = table.getSelectionModel().getSelectedItem();
+        selectedMatch.changeTeamMatch(winnerChoice.getValue().getName(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
     }
 
     public void deleteMatch(ActionEvent actionEvent){
         TeamMatch TeamMatchSelected = table.getSelectionModel().getSelectedItem();
-        teamMatchViewController.removeTeamMatch2(TeamMatchSelected);
+        teamMatchViewController.removeTeamMatch(TeamMatchSelected);
         popupWindow.close();
     }
 

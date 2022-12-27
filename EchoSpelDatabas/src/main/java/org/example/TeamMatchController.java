@@ -1,6 +1,7 @@
 package org.example;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javax.persistence.*;
 import java.util.List;
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
@@ -73,7 +74,7 @@ public class TeamMatchController {
     }
 
 
-    public void removeTeamMatch2(TeamMatch teamMatch){
+    public void removeTeamMatch(TeamMatch teamMatch){
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         teamMatchObservableList.remove(teamMatch);
@@ -102,20 +103,18 @@ public class TeamMatchController {
 
 
 
-    public void changeMatch2 (TeamMatch changeMatch) {
+    public void resolveMatch(TeamMatch selectedMatch) {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
-     //   teamMatchObservableList.remove(changeMatch);
-        TeamMatch changeThisMatch;
+        teamMatchObservableList.remove(selectedMatch);
+        TeamMatch matchToBeChanged;
         try {
             et = em.getTransaction();
             et.begin();
-
-            changeThisMatch = em.find(TeamMatch.class, changeMatch.getMatchId());
-            changeThisMatch.changeTeamMatch(changeMatch.getMatchId(),changeMatch.getTeamId1(),changeMatch.getTeamId2(),changeMatch.getGameId(),changeMatch.getWinnerId(),changeMatch.getDate(),changeMatch.getScoreT1(),changeMatch.getScoreT2());
-            em.merge(changeThisMatch);
+            matchToBeChanged = em.find(TeamMatch.class, selectedMatch.getMatchId());
+            matchToBeChanged.changeTeamMatch(selectedMatch.getWinnerName(),selectedMatch.getScoreT1(),selectedMatch.getScoreT2());
+            em.merge(matchToBeChanged);
             et.commit();
-      //    teamMatchObservableList.add(changeThisMatch);
         } catch (Exception e){
             if (et != null){
                 et.rollback();
@@ -126,7 +125,6 @@ public class TeamMatchController {
         }
             em.close();
     }
-
 
 
     public ObservableList<TeamMatch> getObservableTeamMatch(){
