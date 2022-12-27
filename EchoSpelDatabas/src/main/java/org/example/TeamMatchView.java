@@ -233,7 +233,7 @@ public class TeamMatchView extends VBox {
         scoreT2.setPromptText("Team 2 Score");
 
         Button submit = new Button("Submit");
-        submit.setOnAction(this::changeTeamMatch);
+        submit.setOnAction(this::updateScore);
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(submit,matchIdLabel,matchId,teamId1Label,teamId1,teamId2Label,teamId2,gameIdLabel,gameId,winnerIdLabel,winnerChoice,dateLabel,date,scoreT1Label,scoreT1,scoreT2Label,scoreT2);
@@ -243,6 +243,7 @@ public class TeamMatchView extends VBox {
         Scene scene = new Scene (layout);
         popupWindow.setScene(scene);
         popupWindow.show();
+
         }catch (Exception e){
             e.printStackTrace();
             popupWindow = new Stage();
@@ -306,13 +307,10 @@ public class TeamMatchView extends VBox {
 
         try {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        TeamMatch selectedTeamMatch;
 
         Team team1ForTeamMatch = team1ChoiceBox.getValue();
         Team team2ForTeamMatch = team2ChoiceBox.getValue();
-        Game gameForTeamMatch = gameController.getGame(1);
-      // Game gameForTeamMatch = gameChoicebox.getvalue.getid
-      // if team1ForTeamMatch.getGameId == gameForTeamMatch.getId && team2ForTeamMatch.getGameID == gameForTeamMatch.getId
+        Game gameForTeamMatch = gameChoiceBox.getValue();
 
         teamMatchViewController.addTeamMatch(team1ForTeamMatch,team2ForTeamMatch,gameForTeamMatch,date.getText());
             em.close();
@@ -332,7 +330,7 @@ public class TeamMatchView extends VBox {
     public void updateScore (ActionEvent actionEvent){
         TeamMatch selectedMatch = table.getSelectionModel().getSelectedItem();
         selectedMatch.changeTeamMatch(winnerChoice.getValue().getName(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
-        teamMatchViewController.removeTeamMatch(selectedMatch);
+        teamMatchViewController.resolveMatch(selectedMatch);
         popupWindow.close();
     }
 
