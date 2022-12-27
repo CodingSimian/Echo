@@ -15,6 +15,9 @@ import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
+import java.util.List;
 
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
@@ -119,20 +122,41 @@ public class TeamMatchView extends VBox {
     }
 
     private void addButtonPressed(ActionEvent actionEvent) {
+        teamObservableList = FXCollections.observableArrayList();
+        gameObservableList = FXCollections.observableArrayList();
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        String stringQueryTeam = "SELECT c FROM Team c WHERE c.teamId IS NOT NULL";
+        TypedQuery<Team> tqt = em.createQuery(stringQueryTeam, Team.class);
+
+        String stringQueryGame = "SELECT c FROM Game c WHERE c.gameId IS NOT NULL";
+        TypedQuery<Game> tqg = em.createQuery(stringQueryGame, Game.class);
+
+        try{
+            List<Team> allTeams = tqt.getResultList();
+            teamObservableList.addAll(allTeams);
+
+            List<Game> allGames = tqg.getResultList();
+            gameObservableList.addAll(allGames);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+
         popupWindow = new Stage();
         popupWindow.initModality(Modality.APPLICATION_MODAL);
         popupWindow.setTitle("Add new match");
         popupWindow.setWidth(200);
         popupWindow.setMinHeight(400);
 
-        team1ChoiceBox = new ChoiceBox<>(teamObservableList);
-        team1ChoiceBox.setItems(teamController.getTeamObservableList());
-        team2ChoiceBox = new ChoiceBox<>(teamObservableList);
-        team2ChoiceBox.setItems(teamController.getTeamObservableList());
-       // gameChoiceBox = new ChoiceBox<>(gameObservableList);
-       // gameChoiceBox.setItems(gameController.getGameObservableList());
-
-
+        team1ChoiceBox = new ChoiceBox<>();
+        team1ChoiceBox.getItems().addAll(teamObservableList);
+        team2ChoiceBox = new ChoiceBox<>();
+        team2ChoiceBox.getItems().addAll(teamObservableList);
+        gameChoiceBox = new ChoiceBox<>();
+        gameChoiceBox.getItems().addAll(gameObservableList);
 
         gameId = new TextField();
         date = new TextField();
@@ -150,7 +174,7 @@ public class TeamMatchView extends VBox {
         Submit.setOnAction(this::addNewTeamMatch);
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(Submit,teamId1Label,team1ChoiceBox,teamId2Label, team2ChoiceBox,gameIdLabel,gameId,dateLabel,date);
+        layout.getChildren().addAll(Submit,teamId1Label,team1ChoiceBox,teamId2Label, team2ChoiceBox,gameIdLabel,gameChoiceBox,dateLabel,date);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
@@ -163,17 +187,17 @@ public class TeamMatchView extends VBox {
 
         try {
         TeamMatch selectedTeamMatch = table.getSelectionModel().getSelectedItem();
-      //  Team selectedTeams = new Team();
+        Team team1 = selectedTeamMatch.getTeamId1();
+        Team team2 = selectedTeamMatch.getTeamId2();
+
         popupWindow = new Stage();
         popupWindow.initModality(Modality.APPLICATION_MODAL);
         popupWindow.setTitle("Edit Match");
         popupWindow.setMinHeight(400);
         popupWindow.setMinWidth(400);
 
-        ChoiceBox<TeamMatch> winnerChoice = new ChoiceBox();
-        winnerChoice.getItems().addAll();
-      //  selectedTeams.getName();
-
+        winnerChoice = new ChoiceBox<>();
+        winnerChoice.getItems().addAll(team1,team2);
 
         matchId = new TextField(String.valueOf(selectedTeamMatch.getMatchId()));
         teamId1 = new TextField(String.valueOf(selectedTeamMatch.getTeamId1()));
@@ -209,7 +233,7 @@ public class TeamMatchView extends VBox {
         scoreT2.setPromptText("Team 2 Score");
 
         Button submit = new Button("Submit");
-        submit.setOnAction(this::updateScore);
+        submit.setOnAction(this::changeTeamMatch);
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(submit,matchIdLabel,matchId,teamId1Label,teamId1,teamId2Label,teamId2,gameIdLabel,gameId,winnerIdLabel,winnerChoice,dateLabel,date,scoreT1Label,scoreT1,scoreT2Label,scoreT2);
@@ -274,8 +298,7 @@ public class TeamMatchView extends VBox {
         popupWindow.setScene (scene);
         popupWindow.show();
     }
-
-    }
+}
 
 
 
@@ -302,7 +325,6 @@ public class TeamMatchView extends VBox {
 
     public void changeTeamMatch(ActionEvent actionEvent) {
         TeamMatch teamMatch = table.getSelectionModel().getSelectedItem();
-      //  teamMatch.changeTeamMatch(Integer.parseInt(matchId.getText()),teamId1.getText()),Integer.parseInt(teamId2.getText()),Integer.parseInt(gameId.getText()),Integer.parseInt(winnerId.getText()),date.getText(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
         teamMatchViewController.resolveMatch(teamMatch);
         popupWindow.close();
     }

@@ -115,13 +115,12 @@ public class TeamMatchController {
             matchToBeChanged.changeTeamMatch(selectedMatch.getWinnerName(),selectedMatch.getScoreT1(),selectedMatch.getScoreT2());
             em.merge(matchToBeChanged);
             et.commit();
+            teamMatchObservableList.add(matchToBeChanged);
         } catch (Exception e){
             if (et != null){
                 et.rollback();
             }
             e.printStackTrace();
-        } finally {
-            em.close();
         }
             em.close();
     }
