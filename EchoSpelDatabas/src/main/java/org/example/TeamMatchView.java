@@ -95,8 +95,8 @@ public class TeamMatchView extends VBox {
         teamId2Column.setCellValueFactory(new PropertyValueFactory<TeamMatch,Integer>("teamId2"));
         TableColumn<TeamMatch, Integer> gameIdColumn = new TableColumn<TeamMatch, Integer>("Game Id");
         gameIdColumn.setCellValueFactory(new PropertyValueFactory<TeamMatch,Integer>("gameId"));
-        TableColumn<TeamMatch, Integer> winnerIdColumn = new TableColumn<TeamMatch, Integer>("Winner Id");
-        winnerIdColumn.setCellValueFactory(new PropertyValueFactory<TeamMatch,Integer>("winnerId"));
+        TableColumn<TeamMatch, Integer> winnerIdColumn = new TableColumn<TeamMatch, Integer>("Winner Name");
+        winnerIdColumn.setCellValueFactory(new PropertyValueFactory<TeamMatch,Integer>("<winnerId>"));
         TableColumn<TeamMatch, String> dateColumn = new TableColumn<TeamMatch, String>("Date");
         dateColumn.setCellValueFactory(new PropertyValueFactory<TeamMatch,String>("date"));
         TableColumn<TeamMatch, Integer> scoreT1column = new TableColumn<TeamMatch, Integer>("Score Team 1");
@@ -320,13 +320,6 @@ public class TeamMatchView extends VBox {
         }
     }
 
-
-    public void changeTeamMatch(ActionEvent actionEvent) {
-        TeamMatch teamMatch = table.getSelectionModel().getSelectedItem();
-        teamMatchViewController.resolveMatch(teamMatch);
-        popupWindow.close();
-    }
-
     public void updateScore (ActionEvent actionEvent){
         TeamMatch selectedMatch = table.getSelectionModel().getSelectedItem();
         selectedMatch.changeTeamMatch(winnerChoice.getValue().getName(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
@@ -366,7 +359,13 @@ public class TeamMatchView extends VBox {
     }
 }
 
- /*   public void changeTeamMatch (ActionEvent actionEvent){
+ /*   public void changeTeamMatch(ActionEvent actionEvent) {
+        TeamMatch teamMatch = table.getSelectionModel().getSelectedItem();
+        teamMatchViewController.resolveMatch(teamMatch);
+        popupWindow.close();
+    }
+
+      public void changeTeamMatch (ActionEvent actionEvent){
         TeamMatch teamMatch = table.getSelectionModel().getSelectedItem();
         teamMatchViewController.changeMatch(Integer.parseInt(matchId.getText()),Integer.parseInt(winnerId.getText()),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
         popupWindow.close();
