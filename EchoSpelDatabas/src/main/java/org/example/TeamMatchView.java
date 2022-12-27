@@ -209,7 +209,7 @@ public class TeamMatchView extends VBox {
         scoreT2.setPromptText("Team 2 Score");
 
         Button submit = new Button("Submit");
-        submit.setOnAction(this::changeTeamMatch);
+        submit.setOnAction(this::updateScore);
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(submit,matchIdLabel,matchId,teamId1Label,teamId1,teamId2Label,teamId2,gameIdLabel,gameId,winnerIdLabel,winnerChoice,dateLabel,date,scoreT1Label,scoreT1,scoreT2Label,scoreT2);
@@ -310,6 +310,8 @@ public class TeamMatchView extends VBox {
     public void updateScore (ActionEvent actionEvent){
         TeamMatch selectedMatch = table.getSelectionModel().getSelectedItem();
         selectedMatch.changeTeamMatch(winnerChoice.getValue().getName(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
+        teamMatchViewController.removeTeamMatch(selectedMatch);
+        popupWindow.close();
     }
 
     public void deleteMatch(ActionEvent actionEvent){
