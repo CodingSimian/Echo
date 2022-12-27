@@ -1,13 +1,14 @@
 package org.example;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javax.persistence.*;
 import java.util.List;
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
 
 public class TeamMatchController {
-    private ObservableList<TeamMatch> teamMatchObservableList; //Observable list används eftersom den ändrar sin grafiska aspekt så fort dess värden förändras
+    private ObservableList<TeamMatch> teamMatchObservableList;
 
     public TeamMatchController() {
         teamMatchObservableList = FXCollections.observableArrayList();
@@ -24,11 +25,10 @@ public class TeamMatchController {
 
         }finally {
             em.close();
-
         }
     }
 
-    public void addTeamMatch(int teamId1, int teamId2, int gameId, int winnerId, String date , int scoreT1, int scoreT2) {
+    public void addTeamMatch(Team teamId1, Team teamId2, Game gameId, String date) {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
         TeamMatch addMatch = new TeamMatch();
@@ -36,10 +36,7 @@ public class TeamMatchController {
         addMatch.setTeamId1(teamId1);
         addMatch.setTeamId2(teamId2);
         addMatch.setGameId(gameId);
-        addMatch.setWinnerId(winnerId);
         addMatch.setDate(date);
-        addMatch.setScoreT1(scoreT1);
-        addMatch.setScoreT2(scoreT2);
 
         try {
             et = em.getTransaction();
@@ -60,48 +57,7 @@ public class TeamMatchController {
     }
 
 
-    public TeamMatch getTeamMatch(int matchId) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-
-        TeamMatch teamMatch = new TeamMatch();
-        try {
-            et = em.getTransaction();
-            et.begin();
-            teamMatch = em.find(TeamMatch.class, matchId);
-        }catch (NoResultException e) {
-            e.printStackTrace();
-        }finally {
-            em.close();
-        }
-        return teamMatch;
-    }
-
-   /* public void removeTeamMatch(int matchId){
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-        TeamMatch teamMatch;
-
-        try{
-            et = em.getTransaction();
-            et.begin();
-            teamMatch = em.find(TeamMatch.class,matchId);
-            em.remove(teamMatch);
-            et.commit();
-
-        }catch(Exception ex){
-            if(et != null){
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-        }
-    } */
-
-
-    public void removeTeamMatch2(TeamMatch teamMatch){
+    public void removeTeamMatch(TeamMatch teamMatch){
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         teamMatchObservableList.remove(teamMatch);
@@ -128,92 +84,47 @@ public class TeamMatchController {
         }
     }
 
-  /*  public void changeMatch(int matchId, int winnerId, int scoreT1, int scoreT2){
+    public void resolveMatch(TeamMatch selectedMatch) {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
-        TeamMatch teamMatch;
-        try{
-            et = em.getTransaction();
-            et.begin();
-            teamMatch = em.find(TeamMatch.class, matchId);
-            teamMatch.setWinnerId(winnerId);
-            teamMatch.setScoreT1(scoreT1);
-            teamMatch.setScoreT2(scoreT2);
-
-            em.persist(teamMatch);
-            et.commit();
-        }
-        catch(Exception ex){
-            if(et != null){
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-
-        }
-    } */
-
-    public void changeMatch2 (TeamMatch changeMatch) {
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-        teamMatchObservableList.remove(changeMatch);
-        TeamMatch changeThisMatch;
+        teamMatchObservableList.remove(selectedMatch);
+        TeamMatch matchToBeChanged;
         try {
             et = em.getTransaction();
             et.begin();
 
-            changeThisMatch = em.find(TeamMatch.class, changeMatch.getMatchId());
-            changeThisMatch.changeTeamMatch(changeMatch.getMatchId(),changeMatch.getTeamId1(),changeMatch.getTeamId2(),changeMatch.getGameId(),changeMatch.getWinnerId(),changeMatch.getDate(),changeMatch.getScoreT1(),changeMatch.getScoreT2());
-            em.merge(changeThisMatch);
+            matchToBeChanged = em.find(TeamMatch.class, selectedMatch.getMatchId());
+            matchToBeChanged.changeTeamMatch(selectedMatch.getWinnerName(),selectedMatch.getScoreT1(),selectedMatch.getScoreT2());
+
+            em.merge(matchToBeChanged);
             et.commit();
-            teamMatchObservableList.add(changeThisMatch);
+            teamMatchObservableList.add(matchToBeChanged);
         } catch (Exception e){
-            if (et != null){
-                et.rollback();
-            }
             e.printStackTrace();
         } finally {
             em.close();
         }
-            em.close();
     }
 
- /*   public List<TeamMatch> getAllTeamMatches(){
+  /*  public TeamMatch getTeamMatch(int matchId) {
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
-        List<TeamMatch> teamMatchList = null;
-        boolean isSuccess = true;
-        //String strQuery = "SELECT t FROM TeamMatch t WHERE t.matchId IS NOT NULL";
-       // TypedQuery<TeamMatch> tm = em.createQuery(strQuery, TeamMatch.class);
-       // List<TeamMatch> teamMatchList = new ArrayList<>();
 
-        try{
+        TeamMatch teamMatch = new TeamMatch();
+        try {
             et = em.getTransaction();
             et.begin();
-            TypedQuery<TeamMatch> getAllMatches = em.createQuery("from TeamMatch", TeamMatch.class);
-            teamMatchList = getAllMatches.getResultList();
-            et.commit();
-            //teamMatchList = tm.getResultList();
-
-        }catch(NoResultException ex){
-            ex.printStackTrace();
-        }
-        finally {
+            teamMatch = em.find(TeamMatch.class, matchId);
+        }catch (NoResultException e) {
+            e.printStackTrace();
+        }finally {
             em.close();
-            System.out.println(isSuccess);
         }
-        return teamMatchList;
-
+        return teamMatch;
     } */
 
     public ObservableList<TeamMatch> getObservableTeamMatch(){
         return teamMatchObservableList;
     }
 }
-
-
-
-
 

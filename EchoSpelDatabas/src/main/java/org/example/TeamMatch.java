@@ -1,9 +1,6 @@
 package org.example;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 
@@ -15,20 +12,24 @@ public class TeamMatch implements Serializable {
     }
 
         @Id
+        @GeneratedValue (strategy = GenerationType.IDENTITY)
         @Column(name = "match_Id")
         private int matchId;
 
-        @Column(name = "team_Id1")
-        private int teamId1;
+        @ManyToOne
+        @JoinColumn (name = "team_Id1")
+        private Team teamId1;
 
-        @Column(name = "team_Id2")
-        private int teamId2;
+        @ManyToOne
+        @JoinColumn (name = "team_Id2")
+        private Team teamId2;
 
-        @Column(name = "game_Id" )
-        private int gameId;
+        @ManyToOne
+        @JoinColumn (name = "game_Id")
+        private Game gameId;
 
         @Column(name = "winner_Id" )
-        private int winnerId;
+        private String winnerName;
 
         @Column(name = "date" )
         private String date;
@@ -47,36 +48,36 @@ public class TeamMatch implements Serializable {
         this.matchId = matchId;
     }
 
-    public int getTeamId1() {
+    public Team getTeamId1() {
         return teamId1;
     }
 
-    public void setTeamId1(int teamId1) {
+    public void setTeamId1(Team teamId1) {
         this.teamId1 = teamId1;
     }
 
-    public int getTeamId2() {
+    public Team getTeamId2() {
         return teamId2;
     }
 
-    public void setTeamId2(int teamId2) {
+    public void setTeamId2(Team teamId2) {
         this.teamId2 = teamId2;
     }
 
-    public int getGameId() {
+    public Game getGameId() {
         return gameId;
     }
 
-    public void setGameId(int gameId) {
+    public void setGameId(Game gameId) {
         this.gameId = gameId;
     }
 
-    public int getWinnerId() {
-        return winnerId;
+    public String getWinnerName() {
+        return winnerName;
     }
 
-    public void setWinnerId(int winnerId) {
-        this.winnerId = winnerId;
+    public void setWinnerName(String winnerName) {
+        this.winnerName = winnerName;
     }
 
     public String getDate() {
@@ -103,15 +104,11 @@ public class TeamMatch implements Serializable {
         this.scoreT2 = scoreT2;
     }
 
-    public void changeTeamMatch (int matchId,int teamId1, int teamId2, int gameId, int winnerId, String date, int scoreT1, int scoreT2){
-        this.matchId = matchId;
-        this.teamId1 = teamId1;
-        this.teamId2 = teamId2;
-        this.gameId = gameId;
-        this.winnerId = winnerId;
-        this.date = date;
+    public void changeTeamMatch (String winnerName, int scoreT1, int scoreT2){
+        this.winnerName = winnerName;
         this.scoreT1 = scoreT1;
         this.scoreT2 = scoreT2;
+
     }
 }
 
