@@ -38,7 +38,7 @@ public class PvPView {
     private Button addButton,removeButton,changeButton,mainMenuButton;
 
     private TextField match_IdTF, player_Id1TF, player_id2TF, game_IdTF, winner_IdTF, dateTF, score_P1TF, score_P2TF,userTF;
-    private Label instructionsForPvP;
+    private Label labelWinner,labelPlayer1,labelPlayer2;
     private HBox buttonBox;
 
     private ChoiceBox viewOptions;
@@ -85,25 +85,25 @@ public void BuildUI(){
     TableColumn<PvP, Integer> match_IdColumn = new TableColumn<>("ID of match");
     match_IdColumn.setCellValueFactory(new PropertyValueFactory<>("match_Id")); //lägger in data i cell-tabellen
 
-    TableColumn<PvP, Integer> player_Id2Column = new TableColumn<>("ID player 2");
+    TableColumn<PvP, Integer> player_Id2Column = new TableColumn<>("Player 2");
     player_Id2Column.setCellValueFactory(new PropertyValueFactory<>("player_Id2"));
 
-    TableColumn<PvP, Integer> player_Id1Column = new TableColumn<>("ID-player 1");
+    TableColumn<PvP, Integer> player_Id1Column = new TableColumn<>("Player 1");
     player_Id1Column.setCellValueFactory(new PropertyValueFactory<>("player_Id1"));
 
-    TableColumn<PvP, Integer> game_IdColumn = new TableColumn<>("ID of game being played");
+    TableColumn<PvP, Integer> game_IdColumn = new TableColumn<>("Game name");
     game_IdColumn.setCellValueFactory(new PropertyValueFactory<>("game_Id"));
 
     TableColumn<PvP, String> winner_IdColumn = new TableColumn<>("Winning player");
     winner_IdColumn.setCellValueFactory(new PropertyValueFactory<>("winner_Name"));
 
-    TableColumn<PvP,Integer> score_P2Column = new TableColumn<>("Score of the second player");
+    TableColumn<PvP,Integer> score_P2Column = new TableColumn<>("Score player 2");
     score_P2Column.setCellValueFactory(new PropertyValueFactory<PvP,Integer>("score_P2"));
 
-    TableColumn<PvP, Integer> score_P1Column = new TableColumn<>("Score of the first player");
+    TableColumn<PvP, Integer> score_P1Column = new TableColumn<>("Score player 1");
     score_P1Column.setCellValueFactory(new PropertyValueFactory<PvP,Integer>("score_P1"));
 
-    TableColumn<PvP,String> dateColumn = new TableColumn<>("Date of match being played");
+    TableColumn<PvP,String> dateColumn = new TableColumn<>("Date of match");
     dateColumn.setCellValueFactory(new PropertyValueFactory<PvP,String>("date"));
 
     mainTable.getColumns().addAll(match_IdColumn,player_Id2Column,player_Id1Column,game_IdColumn,winner_IdColumn,score_P1Column,score_P2Column,dateColumn);
@@ -161,11 +161,6 @@ public void addButtonPressed(ActionEvent actionEvent){
     gameChoice = new ChoiceBox<>();
     gameChoice.getItems().addAll(gameList);
 
-    //playerChoice1.setItems(myPlayerController.getPlayerList);
-    //playerChoice2.setItems(myPlayerController.getPlayerList);
-    //gameChoice.setItems(myGameController.getGameList);
-
-
     player_Id1TF = new TextField();
     player_Id1TF.setPromptText("First player ID");
 
@@ -180,6 +175,8 @@ public void addButtonPressed(ActionEvent actionEvent){
 
     Button submitButton = new Button("Submit");
     submitButton.setOnAction(this::register2);
+
+
 
     VBox layout = new VBox(10);
     layout.getChildren().addAll(submitButton,playerChoice1,playerchoice2,gameChoice,dateTF);
@@ -229,8 +226,8 @@ public void addButtonPressed(ActionEvent actionEvent){
         popupWindow = new Stage();
         popupWindow.initModality(Modality.APPLICATION_MODAL);
         popupWindow.setTitle("Ändringsformulär");
-        popupWindow.setMinHeight(400);
-        popupWindow.setMinWidth(200);
+        popupWindow.setMinHeight(600);
+        popupWindow.setMinWidth(400);
 
         winner_IdTF = new TextField(String.valueOf(PvPMatchSelected.getWinner_Name()));
         winner_IdTF.setPromptText("ID of the winner");
@@ -244,8 +241,12 @@ public void addButtonPressed(ActionEvent actionEvent){
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(this::changeScoreInfo);
 
+        labelWinner = new Label("Välj vilken spelare som vann");
+        labelPlayer1 = new Label("Skriv in poäng av player 1");
+        labelPlayer2 = new Label("Skriv in poäng av player 2");
+
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(submitButton,winnerChoice,score_P1TF,score_P2TF);
+        layout.getChildren().addAll(submitButton,labelWinner,winnerChoice,labelPlayer1,score_P1TF,labelPlayer2,score_P2TF);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
@@ -270,30 +271,11 @@ public void addButtonPressed(ActionEvent actionEvent){
         this.viewController = viewController;
     }
 
-    public void register(ActionEvent e){
-        PvP PvPMatchSelected = mainTable.getSelectionModel().getSelectedItem();
-        playerController = new PlayerController();
 
-        Player playerForPVPMatch = playerController.returnPlayer(Integer.parseInt(player_Id1TF.getText()));
-
-        Player playerForPVPMatch2 = playerController.returnPlayer(Integer.parseInt(player_id2TF.getText()));
-
-        gameController = new GameController();
-        Game gameForPVP = gameController.getGame(Integer.parseInt(game_IdTF.getText()));
-
-
-        viewController.addPvPMatch( playerForPVPMatch,playerForPVPMatch2,gameForPVP,dateTF.getText());
-
-        //viewController.addPvPMatch(Integer.parseInt(match_IdTF.getText()), Integer.parseInt(player_Id1TF.getText()),Integer.parseInt(player_id2TF.getText()),Integer.parseInt(game_IdTF.getText()),dateTF.getText());
-        popupWindow.close();
-    }
 
     public void register2(ActionEvent e){
-        //Kom ihåg att göra en returnGame metod imorrn som är returnplayer2
-
 
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-
 
         Player playerForPVPMatch = playerChoice1.getValue();
         Player playerForPVPMatch2 = playerchoice2.getValue();
@@ -302,7 +284,6 @@ public void addButtonPressed(ActionEvent actionEvent){
 
         viewController.addPvPMatch(playerForPVPMatch,playerForPVPMatch2,gameForPVP,dateTF.getText());
 
-        //viewController.addPvPMatch(Integer.parseInt(match_IdTF.getText()), Integer.parseInt(player_Id1TF.getText()),Integer.parseInt(player_id2TF.getText()),Integer.parseInt(game_IdTF.getText()),dateTF.getText());
         em.close();
         popupWindow.close();
     }
@@ -332,43 +313,11 @@ public void addButtonPressed(ActionEvent actionEvent){
         return rootPvPScene;
     }
 
-    public Player returnPlayer2(int playerID, EntityManager em){
-        String query = "SELECT c FROM Player c WHERE c.player_Id= :player_Id"; //c är placeholder
-        TypedQuery<Player> tq = em.createQuery(query, Player.class);
-        tq.setParameter("player_Id", playerID);
-
-
-        Player somePlayer = null;
-        try{
-            somePlayer = tq.getSingleResult();
-
-        }
-        catch(NoResultException ex){
-            System.out.println("ex");
-            ex.printStackTrace();
-        }
-
-        return somePlayer;
-
+    public Button getMainMenuButton() {
+        return mainMenuButton;
     }
 
-    public Game returnGame2(int daGameID, EntityManager em)
-    {
-        String query = "SELECT c FROM Game c WHERE c.gameId= :game_Id"; //c är placeholder
-        TypedQuery<Game> tq = em.createQuery(query, Game.class);
-        tq.setParameter("game_Id", daGameID);
-
-        Game someGame = null;
-        try{
-            someGame = tq.getSingleResult();
-
-        }
-        catch(NoResultException ex){
-            System.out.println("ex");
-            ex.printStackTrace();
-        }
-
-        return someGame;
-
+    public TextField getUserTF() {
+        return userTF;
     }
 }

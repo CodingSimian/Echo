@@ -368,7 +368,4 @@ public class TeamView {
     public Button getHomebutton(){
         return  homebutton;
     }
-
-
-
 }
