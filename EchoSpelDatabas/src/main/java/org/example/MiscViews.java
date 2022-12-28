@@ -18,7 +18,7 @@ import java.io.IOException;
 public class MiscViews {
     private BorderPane root2Scene;
     private VBox optionsVBox;
-    private Button lagButton, matchPvPButton, turneringButton, matchTvTButton, backButton, logInButton, logOutButton,spelareButton;
+    private Button lagButton, matchPvPButton, gameButton, matchTvTButton, backButton, logInButton, logOutButton,spelareButton;
     private Label alternativ;
 
     private TextField userTF,userTFSecondScene;
@@ -39,16 +39,16 @@ public class MiscViews {
     private TableColumn<Personal, String> nickNameColum;
 
 
-    public MiscViews() throws IOException {
-        buildUI();
+    public MiscViews(TextField daUserTF) throws IOException {
+        this.userTF = daUserTF;
         buildUI2();
+        buildUI();
+
     }
 
 
     public void buildUI2() {
         controller = new PersonalController();
-        userTF = new TextField();
-        userTF.setEditable(false);
 
 
         table = new TableView<Personal>();
@@ -63,7 +63,7 @@ public class MiscViews {
 
         top = new HBox();
         top.setSpacing(15);
-        top.getChildren().addAll(logInButton, logOutButton, userTF);
+        top.getChildren().addAll(logInButton, logOutButton);
 
         firstNameColum = new TableColumn<Personal, String>("Firstname");
         firstNameColum.setCellValueFactory(new PropertyValueFactory<Personal, String>("firstName"));
@@ -75,11 +75,12 @@ public class MiscViews {
         nickNameColum.setCellValueFactory(new PropertyValueFactory<Personal, String>("nickName"));
 
         table.getColumns().addAll(firstNameColum, lastNameColum, nickNameColum);
-        table.setItems(controller.getPersonal1());
+        table.setItems(controller.getPersonal());
         table.setFocusTraversable(false);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         startRoot.setTop(top);
+
         startRoot.setCenter(table);
 
     }
@@ -156,16 +157,16 @@ public class MiscViews {
         matchPvPButton = new Button("Match (Player vs Player)");
         matchPvPButton.setPrefWidth(150);
 
-        turneringButton = new Button("Turnering");
+        gameButton = new Button("Game");
         //turneringButton.setOnAction(ActionEvent -> scene.setRoot());
-        turneringButton.setPrefWidth(150);
+        gameButton.setPrefWidth(150);
 
         alternativ = new Label("Välj vad du vill konfigurera");
         alternativ.setFont(new Font("System", 18));
-        userTFSecondScene = new TextField();
-        userTFSecondScene.setEditable(false);
+        userTFSecondScene = userTF;
+        //userTFSecondScene.setEditable(false);
 
-        optionsVBox.getChildren().addAll(alternativ, spelareButton, lagButton, matchPvPButton, turneringButton, matchTvTButton, backButton);
+        optionsVBox.getChildren().addAll(alternativ, spelareButton, lagButton, matchPvPButton, gameButton, matchTvTButton, backButton);
         optionsVBox.setAlignment(Pos.CENTER);
 
         root2Scene.setCenter(optionsVBox);
@@ -213,12 +214,12 @@ public class MiscViews {
         this.matchPvPButton = matchPvPButton;
     }
 
-    public Button getTurneringButton() {
-        return turneringButton;
+    public Button getGameButton() {
+        return gameButton;
     }
 
-    public void setTurneringButton(Button turneringButton) {
-        this.turneringButton = turneringButton;
+    public void setGameButton(Button gameButton) {
+        this.gameButton = gameButton;
     }
 
     public Button getMatchTvTButton() {
@@ -260,4 +261,12 @@ public class MiscViews {
     public void setUserTFSecondScene(TextField userTFSecondScene) {
         this.userTFSecondScene = userTFSecondScene;
     }
+
+    public HBox getTop() {
+        return top;
+    }
+
+
+
+
 }
