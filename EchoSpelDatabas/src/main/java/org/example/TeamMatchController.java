@@ -100,10 +100,14 @@ public class TeamMatchController {
             et.commit();
             teamMatchObservableList.add(matchToBeChanged);
         } catch (Exception e){
+           if(et != null){
+               et.rollback();
+           }
             e.printStackTrace();
         } finally {
             em.close();
         }
+        em.close();
     }
 
   /*  public TeamMatch getTeamMatch(int matchId) {

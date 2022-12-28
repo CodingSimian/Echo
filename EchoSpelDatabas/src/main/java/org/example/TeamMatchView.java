@@ -23,14 +23,16 @@ import java.util.List;
 
 import static org.example.Main.ENTITY_MANAGER_FACTORY;
 
-public class TeamMatchView extends VBox {
+//Oscar
+
+public class TeamMatchView {
     private BorderPane rootTeamMatchScene;
     private TableView<TeamMatch> table;
     private TableColumn<TeamMatch,Integer> matchIdColumn;
     private TableColumn<TeamMatch, Integer> teamId1Column;
     private TableColumn<TeamMatch,Integer>  teamId2Column;
     private TableColumn<TeamMatch, Integer> gameIdColumn;
-    private TableColumn<TeamMatch, Integer> winnerIdColumn;
+    private TableColumn<TeamMatch, String> winnerIdColumn;
     private TableColumn<TeamMatch,String> dateColumn;
     private TableColumn<TeamMatch, Integer> scoreT1Column;
     private TableColumn<TeamMatch,Integer> scoreT2Column;
@@ -97,8 +99,8 @@ public class TeamMatchView extends VBox {
         teamId2Column.setCellValueFactory(new PropertyValueFactory<TeamMatch,Integer>("teamId2"));
         TableColumn<TeamMatch, Integer> gameIdColumn = new TableColumn<TeamMatch, Integer>("Game Id");
         gameIdColumn.setCellValueFactory(new PropertyValueFactory<TeamMatch,Integer>("gameId"));
-        TableColumn<TeamMatch, Integer> winnerIdColumn = new TableColumn<TeamMatch, Integer>("Winner Name");
-        winnerIdColumn.setCellValueFactory(new PropertyValueFactory<TeamMatch,Integer>("<winnerId>"));
+        TableColumn<TeamMatch, String> winnerIdColumn = new TableColumn<TeamMatch, String>("Winner Name");
+        winnerIdColumn.setCellValueFactory(new PropertyValueFactory<TeamMatch,String>("winnerName"));
         TableColumn<TeamMatch, String> dateColumn = new TableColumn<TeamMatch, String>("Date");
         dateColumn.setCellValueFactory(new PropertyValueFactory<TeamMatch,String>("date"));
         TableColumn<TeamMatch, Integer> scoreT1column = new TableColumn<TeamMatch, Integer>("Score Team 1");
@@ -422,6 +424,7 @@ public class TeamMatchView extends VBox {
     public void updateScore (ActionEvent actionEvent){
         TeamMatch selectedMatch = table.getSelectionModel().getSelectedItem();
         selectedMatch.changeTeamMatch(winnerChoice.getValue().getName(),Integer.parseInt(scoreT1.getText()),Integer.parseInt(scoreT2.getText()));
+
         teamMatchViewController.resolveMatch(selectedMatch);
         popupWindow.close();
     }

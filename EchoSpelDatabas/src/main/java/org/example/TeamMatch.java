@@ -2,6 +2,7 @@ package org.example;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.Entity;
 
 
 @Entity
@@ -73,7 +74,7 @@ public class TeamMatch implements Serializable {
     }
 
     public String getWinnerName() {
-        return winnerName;
+        return this.winnerName;
     }
 
     public void setWinnerName(String winnerName) {
