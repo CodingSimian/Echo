@@ -1,5 +1,7 @@
 package org.example;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -124,7 +126,48 @@ public class TeamMatchView extends VBox {
     private void addButtonPressed(ActionEvent actionEvent) {
         teamObservableList = FXCollections.observableArrayList();
         gameObservableList = FXCollections.observableArrayList();
+
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+
+        String stringQueryTeam = "SELECT c FROM Team c WHERE c.teamId IS NOT NULL";
+        TypedQuery<Team> tqt = em.createQuery(stringQueryTeam, Team.class);
+
+        String stringQueryGame = "SELECT c FROM Game c WHERE c.gameId IS NOT NULL";
+        TypedQuery<Game> tqg = em.createQuery(stringQueryGame, Game.class);
+
+        try{
+            //List<Team> allTeams = tqt.getResultList();
+            //teamObservableList.addAll(allTeams);
+
+            List<Game> allGames = tqg.getResultList();
+            gameObservableList.addAll(allGames);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+/*
+        //Man ska ha så att team bara kan möta andra teams, samt att man bara kan välja de lag som korresponderar mot det game som har blivit valt
+        popupWindow = new Stage();
+        popupWindow.initModality(Modality.APPLICATION_MODAL);
+        popupWindow.setTitle("Add new match");
+        popupWindow.setWidth(200);
+        popupWindow.setMinHeight(400);
+
+        team1ChoiceBox = new ChoiceBox<>();
+        team1ChoiceBox.getItems().addAll(teamObservableList);
+        team2ChoiceBox = new ChoiceBox<>();
+        team2ChoiceBox.getItems().addAll(teamObservableList);
+        gameChoiceBox = new ChoiceBox<>();
+        gameChoiceBox.getItems().addAll(gameObservableList);
+
+        teamObservableList = FXCollections.observableArrayList();
+        gameObservableList = FXCollections.observableArrayList();
+
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+
         String stringQueryTeam = "SELECT c FROM Team c WHERE c.teamId IS NOT NULL";
         TypedQuery<Team> tqt = em.createQuery(stringQueryTeam, Team.class);
 
@@ -142,28 +185,84 @@ public class TeamMatchView extends VBox {
             e.printStackTrace();
         } finally {
             em.close();
-        }
+        }*/
 
 
+        //Man ska ha så att team bara kan möta andra teams, samt att man bara kan välja de lag som korresponderar mot det game som har blivit valt
         popupWindow = new Stage();
         popupWindow.initModality(Modality.APPLICATION_MODAL);
         popupWindow.setTitle("Add new match");
-        popupWindow.setWidth(200);
+        popupWindow.setWidth(400);
         popupWindow.setMinHeight(400);
 
-        team1ChoiceBox = new ChoiceBox<>();
-        team1ChoiceBox.getItems().addAll(teamObservableList);
-        team2ChoiceBox = new ChoiceBox<>();
-        team2ChoiceBox.getItems().addAll(teamObservableList);
         gameChoiceBox = new ChoiceBox<>();
+        team1ChoiceBox = new ChoiceBox<>();
+        team2ChoiceBox = new ChoiceBox<>();
         gameChoiceBox.getItems().addAll(gameObservableList);
+        //Lägg till en listener för att ändra på choiceboxesen för team1/2 beronde på vilket spel som väljs
+        gameChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number newNumber) {
+                if(teamObservableList.isEmpty()){
+                    Game gameChosen = gameChoiceBox.getItems().get((Integer)newNumber);
+                    EntityManager em2 = ENTITY_MANAGER_FACTORY.createEntityManager();
+                    String strQueryteams = "SELECT c FROM Team c WHERE c.game=: game";
+                    TypedQuery<Team> tq = em2.createQuery(strQueryteams, Team.class);
+                    tq.setParameter("game",gameChosen);
+                    try{
+                        List<Team> allTeamSelected = tq.getResultList();
+                        teamObservableList.addAll(allTeamSelected);
+
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    } finally {
+
+                        team1ChoiceBox.getItems().addAll(teamObservableList);
+                        team2ChoiceBox.getItems().addAll(teamObservableList);
+
+
+                        em2.close();
+                    }
+                }else{
+                    teamObservableList.clear();
+                    team1ChoiceBox.getItems().clear(); //Cleara choiceboxens så att man inte får alla lag som alternativ samtidigt
+                    team2ChoiceBox.getItems().clear();
+
+                    Game gameChosen = gameChoiceBox.getItems().get((Integer)newNumber);
+                    EntityManager em2 = ENTITY_MANAGER_FACTORY.createEntityManager();
+                    String strQueryteams = "SELECT c FROM Team c WHERE c.game=: game";
+                    TypedQuery<Team> tq = em2.createQuery(strQueryteams, Team.class);
+                    tq.setParameter("game",gameChosen);
+                    try{
+                        List<Team> allTeamSelected = tq.getResultList();
+                        teamObservableList.addAll(allTeamSelected);
+
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    } finally {
+
+                        team1ChoiceBox.getItems().addAll(teamObservableList);
+                        team2ChoiceBox.getItems().addAll(teamObservableList);
+
+
+                        em2.close();
+                    }
+                }
+
+
+            }
+        });
+
+
 
         gameId = new TextField();
         date = new TextField();
 
         Label teamId1Label = new Label("Team Id 1: ");
         Label teamId2Label = new Label("Team Id 2: ");
-        Label gameIdLabel = new Label ("Game Id: ");
+        Label gameIdLabel = new Label ("Väl vilket spel som spelas först, sedan välj de team som spelar");
         Label dateLabel = new Label ("Date: ");
 
         gameId.setPromptText("Game Id");
@@ -174,7 +273,7 @@ public class TeamMatchView extends VBox {
         Submit.setOnAction(this::addNewTeamMatch);
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(Submit,teamId1Label,team1ChoiceBox,teamId2Label, team2ChoiceBox,gameIdLabel,gameChoiceBox,dateLabel,date);
+        layout.getChildren().addAll(gameIdLabel,gameChoiceBox,teamId1Label,team1ChoiceBox,teamId2Label, team2ChoiceBox,dateLabel,date,Submit);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);

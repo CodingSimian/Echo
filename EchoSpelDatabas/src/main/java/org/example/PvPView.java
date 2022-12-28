@@ -124,7 +124,7 @@ public void addButtonPressed(ActionEvent actionEvent){
     popupWindow.initModality(Modality.APPLICATION_MODAL);
     popupWindow.setTitle("Tilläggsformulär");
     popupWindow.setMinHeight(400);
-    popupWindow.setMinWidth(200);
+    popupWindow.setMinWidth(400);
 
     //Skapa två observableListor, en för alla player objekt och game objekt
     playerList = FXCollections.observableArrayList();
@@ -176,10 +176,15 @@ public void addButtonPressed(ActionEvent actionEvent){
     Button submitButton = new Button("Submit");
     submitButton.setOnAction(this::register2);
 
+    Label player1L = new Label("Välj player 1");
+    Label player2L = new Label("Välj player 2");
+    Label gameL = new Label("Välj vilket spel som spelas");
+    Label dateL = new Label("Skriv in det datum som matchen tar plats");
+
 
 
     VBox layout = new VBox(10);
-    layout.getChildren().addAll(submitButton,playerChoice1,playerchoice2,gameChoice,dateTF);
+    layout.getChildren().addAll(player1L,playerChoice1,player2L,playerchoice2,gameL,gameChoice,dateL,dateTF,submitButton);
     layout.setAlignment(Pos.CENTER);
 
     Scene scene = new Scene(layout);
