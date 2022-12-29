@@ -18,7 +18,7 @@ import java.io.IOException;
 public class MiscViews {
     private BorderPane root2Scene;
     private VBox optionsVBox;
-    private Button lagButton, matchPvPButton, gameButton, matchTvTButton, backButton, logInButton, logOutButton,spelareButton;
+    private Button lagButton, matchPvPButton, gameButton, matchTvTButton, backButton, logInButton, logOutButton,spelareButton,personalButton;
     private Label alternativ;
 
     private TextField userTF,userTFSecondScene;
@@ -141,6 +141,9 @@ public class MiscViews {
         optionsVBox.setSpacing(30);
 
 
+        personalButton = new Button("Personal");
+        personalButton.setPrefWidth(150);
+
         spelareButton = new Button("Spelare");
         spelareButton.setPrefWidth(150);
 
@@ -166,7 +169,7 @@ public class MiscViews {
         userTFSecondScene = userTF;
         //userTFSecondScene.setEditable(false);
 
-        optionsVBox.getChildren().addAll(alternativ, spelareButton, lagButton, matchPvPButton, gameButton, matchTvTButton, backButton);
+        optionsVBox.getChildren().addAll(alternativ, personalButton, spelareButton, lagButton, matchPvPButton, gameButton, matchTvTButton, backButton);
         optionsVBox.setAlignment(Pos.CENTER);
 
         root2Scene.setCenter(optionsVBox);
@@ -267,6 +270,7 @@ public class MiscViews {
     }
 
 
-
-
+    public Button getPersonalButton() {
+        return personalButton;
+    }
 }

@@ -74,12 +74,11 @@ public class Graphics  {
 
 
     // StartMetod som retunera en Stage till Main som sedan kör launch,
-    // personalView ligger här tillfälligt
     public Stage start(){
+        scene = new Scene(optionsMenu.getStartRoot(),900,900);
         userTF.setEditable(false);
         userTF.setFocusTraversable(false);
 
-        //optionsMenu.getTop().getChildren().add(userTF);
         optionsMenu.getTop().getChildren().add(userTF);
 
     //optionsMenu.getRoot2Scene().setBottom(userTF);
@@ -92,7 +91,7 @@ public class Graphics  {
 
         myTeamView.getHomebutton().setOnAction(e-> scene.setRoot(optionsMenu.getRoot2Scene()));
 
-        scene = new Scene(optionsMenu.getStartRoot(),900,900);
+        optionsMenu.getPersonalButton().setOnAction(e -> scene.setRoot(personalView.getPane()));
 
         optionsMenu.getLagButton().setOnAction(e -> scene.setRoot(myTeamView.getTeamView()));
 
@@ -104,6 +103,7 @@ public class Graphics  {
 
         optionsMenu.getGameButton().setOnAction(e -> scene.setRoot(myGameView.getPane()));
         myGameView.getHomeButton().setOnAction(e -> scene.setRoot(optionsMenu.getRoot2Scene()));
+        personalView.getHomeButton().setOnAction(e -> scene.setRoot(optionsMenu.getRoot2Scene()));
         //optionsMenu.getSpelareButton().setOnAction(e -> scene.setRoot(playerView.get));
 
         optionsMenu.getLogInButton().setOnAction(e->{
