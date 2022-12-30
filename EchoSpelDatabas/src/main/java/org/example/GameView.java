@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.hibernate.tool.schema.Action;
@@ -44,6 +45,7 @@ public class GameView extends VBox {
 
     GameView(Button button) {
         buildUI(button);
+
     }
 
     private void buildUI(Button button){
@@ -56,12 +58,12 @@ public class GameView extends VBox {
         homeButton = button;
         pane.setPrefSize(800,700);
         table.setPrefSize(200,300);
-
+        homeButton.setPrefSize(100,25);
         add.setOnAction(this::addButtonPressed);
-        add.setPrefSize(50,50);
-        delete.setPrefSize(50,50);
+        add.setPrefSize(100,25);
+        delete.setPrefSize(100,25);
         delete.setOnAction(this::removeButtonPressed);
-        edit.setPrefSize(50,50);
+        edit.setPrefSize(100,25);
         edit.setOnAction(this::editButtonPressed);
         top = new HBox();
         top.setSpacing(15);
@@ -71,7 +73,8 @@ public class GameView extends VBox {
         gameNameColumn = new TableColumn<Game, String>("Game");
         gameNameColumn.setCellValueFactory(new PropertyValueFactory<Game,String>("gameName"));
 
-        TableColumn<Game,String > gameNameColumn = new TableColumn<Game, String>("GameName");
+
+        TableColumn<Game,String> gameNameColumn = new TableColumn<Game, String>("Game Name");
         gameNameColumn.setCellValueFactory(new PropertyValueFactory<Game,String>("gameName"));
 
 
@@ -84,7 +87,15 @@ public class GameView extends VBox {
 
         // MAKES IT VISIBLE
         pane.setTop(top);
+  //    pane.setStyle("-fx-background-color: #777473");
         pane.setCenter(table);
+  //      table.setStyle("-fx-background-color: #ffffff");
+  //      gameNameColumn.setStyle("-fx-background-color: #aaaaaa"); //background for whole table
+  //      homeButton.setStyle("-fx-background-color: #a72608");
+  //      add.setStyle("-fx-background-color: #a72608");
+  //      delete.setStyle("-fx-background-color: #a72608");
+  //      edit.setStyle("-fx-background-color: #a72608");
+
     }
     public void setHomeButton(Button button){
         homeButton = button;
@@ -93,6 +104,7 @@ public class GameView extends VBox {
 
 
     public BorderPane getPane(){
+
         return pane;
     }
 
@@ -209,5 +221,8 @@ public class GameView extends VBox {
         popupWindow.close();
     }
 
+    public Button getHomeButton() {
+        return homeButton;
+    }
 }
 
