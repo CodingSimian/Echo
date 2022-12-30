@@ -80,10 +80,6 @@ public class TeamView {
         edit.setOnAction(this::editButtonPressed);
 
 
-
-
-
-
         HBox top = new HBox();
         top.setSpacing(15);
         top.getChildren().addAll(homebutton,add,delete,edit);
@@ -103,23 +99,13 @@ public class TeamView {
         gameIdColum.setCellValueFactory(new PropertyValueFactory<Team, Game>("game"));
 
 
-
         table.getColumns().addAll(idColum,nameColum,gameIdColum);
-
-
         table.setFocusTraversable(false);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setItems(controller.getTeamObservableList());
 
-
-
         mainPane.setTop(top);
         mainPane.setCenter(table);
-
-
-
-
-
 
     }
 
@@ -136,11 +122,7 @@ public class TeamView {
             teamName = new TextField();
             teamName.setPromptText("Team Name");
 
-
-
             gamesDropDown = new ChoiceBox<>(games);
-
-
 
             Button Submit = new Button("Sumbit");
             Submit.setOnAction(this::register);
@@ -163,17 +145,12 @@ public class TeamView {
         table.getSelectionModel().getSelectedItem().setName(teamName.getText());
         controller.updateTeam(table.getSelectionModel().getSelectedItem());
         controller.updatePlayers(alterdPlayers);
-        //uppdateGameColum();
-
         popUpWindow.close();
 
     }
     private void register(ActionEvent event){
-
-
         controller.addTeam(teamName.getText(),gamesDropDown.getSelectionModel().getSelectedItem());
         popUpWindow.close();
-        //uppdateGameColum();
     }
 
     private void deleteButtonPressed(ActionEvent event) {
@@ -189,7 +166,6 @@ public class TeamView {
            tf.setPrefHeight(30);
            tf.setPrefWidth(260);
 
-
            Button yes = new Button("yes");
            yes.setOnAction(this::remove);
            yes.setPrefSize(50, 50);
@@ -199,7 +175,6 @@ public class TeamView {
            Button filler = new Button();
            filler.setPrefSize(13, 13);
            filler.setVisible(false);
-
 
            HBox box = new HBox();
            box.setPrefSize(100, 200);
@@ -220,7 +195,6 @@ public class TeamView {
     public void remove(ActionEvent event){
         controller.removeTeam(table.getSelectionModel().getSelectedItem());
         popUpWindow.close();
-       //uppdateGameColum();
     }
     private void editButtonPressed(ActionEvent event) {
         if(table.getSelectionModel().getSelectedItem() != null) {
@@ -232,7 +206,6 @@ public class TeamView {
 
             teamName = new TextField(table.getSelectionModel().getSelectedItem().getName());
             teamName.setPromptText("Team Name");
-
 
             HBox buttonBox = new HBox();
             buttonBox.setSpacing(50);
@@ -248,7 +221,6 @@ public class TeamView {
 
             buttonBox.getChildren().addAll(deleteTeamMate, addTeamMate);
 
-
             HBox box = new HBox();
             box.setSpacing(50);
             box.setAlignment(Pos.CENTER);
@@ -258,16 +230,14 @@ public class TeamView {
             box.getChildren().addAll(label1, label2);
 
             // ChoiceBoxes
-
             alterdPlayers.clear();
-
             others.clear();
             others.addAll(allPlayers);
             othersDropDown = new ChoiceBox<>(others);
             othersDropDown.setPrefWidth(75);
             List<Player> toRemove = table.getSelectionModel().getSelectedItem().getTeamMembers();
-            Player player1 = new Player();
-            Player player2 = new Player();
+            Player player1;
+
             for (Player player : toRemove) {
                 player1 = player;
                 for (int j = 0; j<others.size(); j++ ) {
@@ -278,25 +248,12 @@ public class TeamView {
 
             }
 
-
-
-
             teamMembers.clear();
             teamMembers.addAll(table.getSelectionModel().getSelectedItem().getTeamMembers());
             membersDropDown = new ChoiceBox<>(teamMembers);
             membersDropDown.setPrefWidth(75);
-
             others.removeAll(teamMembers);
-
-
-
-
-
-
-
-           // games.addAll(controller.getAllGames());
             gamesDropDown = new ChoiceBox<>(games);
-
             // Sets correct starting value for gamesDropDown
             Game game1;
             int value = 0;
@@ -306,12 +263,7 @@ public class TeamView {
                 }
 
             }
-
             gamesDropDown.setValue(games.get(value));
-
-
-
-
             gamesDropDown.setPrefWidth(75);
 
 
@@ -338,8 +290,6 @@ public class TeamView {
     }
 
     public void addTeamMateButtonPressed(ActionEvent event){
-
-            //controller.updatePlayer(othersDropDown.getValue());
             othersDropDown.getValue().setTeam_Id(table.getSelectionModel().getSelectedItem().getTeamId());
             alterdPlayers.add(othersDropDown.getValue());
             teamMembers.add(othersDropDown.getValue());
@@ -355,15 +305,9 @@ public class TeamView {
         teamMembers.remove(membersDropDown.getValue());
 
     }
-
-
     public BorderPane getTeamView(){
         return mainPane;
     }
-
-
-
-
 
     public Button getHomebutton(){
         return  homebutton;

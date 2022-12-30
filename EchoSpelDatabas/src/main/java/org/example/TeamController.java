@@ -128,84 +128,6 @@ public class TeamController {
 
     }
 
-
-
-    public Team getTeam(int teamId){
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-        Team team = new Team();
-
-        try{
-            et = em.getTransaction();
-            et.begin();
-            team = em.find(Team.class,teamId);
-
-
-        }catch(Exception ex){
-            if(et != null){
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-        }
-        return team;
-
-    }
-
-    public List<Player>getOtherPlayers(int id){
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        String strQuery = "SELECT e FROM Player e WHERE NOT e.team_Id =" + id ;
-        String strQuery2 = "SELECT e From Player e WHERE e.team_Id IS NULL";
-        Query q = em.createNativeQuery("SELECT * FROM player e WHERE e.team_Id IS NULL");
-        TypedQuery<Player> tQ = em.createQuery(strQuery, Player.class);
-        TypedQuery<Player> tq2 = em.createQuery(strQuery2, Player.class);
-        List<Player> temp = new ArrayList<>();
-
-
-
-        try{
-             temp = tQ.getResultList();
-             temp.addAll(tq2.getResultList());
-
-
-        }catch(NoResultException ex){
-            ex.printStackTrace();
-        }
-        finally {
-
-        }
-
-        return temp;
-
-    }
-
-    public List<Player>getTeamMembers(int id){
-
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        String strQuery = "SELECT e FROM Player e WHERE  e.team_Id =" + id;
-        TypedQuery<Player> tQ = em.createQuery(strQuery, Player.class);
-        List<Player> temp = new ArrayList<>();
-
-
-
-        try{
-            temp = tQ.getResultList();
-
-
-        }catch(NoResultException ex){
-            ex.printStackTrace();
-        }
-        finally {
-
-        }
-
-        return temp;
-
-
-    }
-
     public List<Game>getAllGames(){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         String strQuery = "SELECT e FROM Game e WHERE e.gameId IS NOT NULL";
@@ -257,31 +179,6 @@ public class TeamController {
 
     }
 
-    public void updatePlayer(Player player){
-        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-        EntityTransaction et = null;
-
-
-        try{
-            et = em.getTransaction();
-            et.begin();
-            em.merge(player);
-            et.commit();
-
-
-        }catch(Exception ex){
-            if(et != null){
-                et.rollback();
-            }
-            ex.printStackTrace();
-        }
-        finally {
-            em.close();
-        }
-        em.close();
-
-    }
-
     public void updatePlayers(List<Player> players){
         EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction et = null;
@@ -310,10 +207,6 @@ public class TeamController {
         em.close();
 
     }
-
-
-
-
 
 
     public ObservableList<Team> getTeamObservableList(){

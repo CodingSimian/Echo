@@ -132,7 +132,7 @@ public class PlayerView extends Application {
 
         //Get all the columns names into the table and show up the table
         table = new TableView<>();
-        table.setItems(getPlayer());
+        //table.setItems(getPlayer());
         table.getColumns().addAll(playIdColumn, fnameColumn, lnameColumn, nickNameColumn, addressColumn, postNumColumn,
                 postCitColumn, counColumn, e_mailColumn, team_idColumn);
 
@@ -187,7 +187,7 @@ public class PlayerView extends Application {
 
 
         //Get all players
-        public ObservableList<Player> getPlayer () {
+       /* public ObservableList<Player> getPlayer () {
 
             Player player = new Player();
             ObservableList<Player> players = FXCollections.observableArrayList();
@@ -203,6 +203,8 @@ public class PlayerView extends Application {
             players.add(new Player(player.getTeam_Id()));
             return players;
         }
+
+        */
 
 
 

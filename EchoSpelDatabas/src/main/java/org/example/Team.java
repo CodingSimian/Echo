@@ -31,13 +31,6 @@ public class Team implements Serializable {
     public List<Player> getTeamMembers(){
         return teamMembers;
     }
-    public void removeTeamMember(Player player){
-        teamMembers.remove(player);
-        player.setTeam_IdNull();
-    }
-    public void addTeamMember(Player player){
-        teamMembers.add(player);
-    }
 
     public Game getGame(){
         return game;
